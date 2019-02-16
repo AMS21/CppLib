@@ -1,0 +1,64 @@
+matrix:
+  fast_finish: false
+
+environment:
+  matrix:
+    - gen: "MinGW"
+    - gen: "Visual Studio 15 2017"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+install:
+  - IF "%gen%" == "MinGW" appveyor-retry appveyor DownloadFile http://downloads.sourceforge.net/mingw-w64/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
+  - IF "%gen%" == "MinGW" 7z x x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z -oc:\mingw > nul
+
+build_script:
+  # ============= MINGW MAKEFILES
+  # workaround for CMake not wanting sh.exe on PATH for MinGW
+  - IF "%gen%" == "MinGW" set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+  - IF "%gen%" == "MinGW" set PATH=C:\mingw\mingw64\bin;%PATH%
+  # Debug x64
+  - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x64 -DCMAKE_BUILD_TYPE=Debug
+  - IF "%gen%" == "MinGW" cmake --build . -- -j2
+  - IF "%gen%" == "MinGW" ctest --output-on-failure .
+  # Release x64
+  - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x64 -DCMAKE_BUILD_TYPE=Release
+  - IF "%gen%" == "MinGW" cmake --build . -- -j2
+  - IF "%gen%" == "MinGW" ctest --output-on-failure .
+  # Debug x86
+  - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Debug
+  - IF "%gen%" == "MinGW" cmake --build . -- -j2
+  - IF "%gen%" == "MinGW" ctest --output-on-failure .
+  # Release x86
+  - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Release
+  - IF "%gen%" == "MinGW" cmake --build . -- -j2
+  - IF "%gen%" == "MinGW" ctest --output-on-failure .
+  # Exit
+  - IF "%gen%" == "MinGW" appveyor exit
+  # ============= VISUAL STUDIO
+  # x64 Debug
+  - cmake -G "%gen% Win64" -DCMAKE_BUILD_TYPE=Debug .
+  - msbuild ASL.sln /p:Configuration=Debug;Platform="x64" /maxcpucount
+  - ctest --output-on-failure -C Debug .
+  # x64 Release
+  - cmake -G "%gen% Win64" -DCMAKE_BUILD_TYPE=Release .
+  - msbuild ASL.sln /p:Configuration=Release;Platform="x64" /maxcpucount
+  - ctest --output-on-failure -C Release .
+  # Remove Cache file
+  - del CMakeCache.txt /F
+  # x86 Debug
+  - cmake -G "%gen%" -DCMAKE_BUILD_TYPE=Debug .
+  - msbuild ASL.sln /p:Configuration=Debug;Platform="Win32" /maxcpucount
+  - ctest --output-on-failure -C Debug .
+  # x86 Release
+  - cmake -G "%gen%" -DCMAKE_BUILD_TYPE=Release .
+  - msbuild ASL.sln /p:Configuration=Release;Platform="Win32" /maxcpucount
+  - ctest --output-on-failure -C Release .
+  # Remove Cache file
+  - del CMakeCache.txt /F
+  # static code analysis on MSVC 2017
+  - IF "%gen%" == "Visual Studio 15 2017" cmake -G "%gen% Win64" .
+  - IF "%gen%" == "Visual Studio 15 2017" msbuild ASL.sln /p:Configuration=Debug;Platform=x64 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false
+  # Remove Cache file
+  - del CMakeCache.txt /F
+  - IF "%gen%" == "Visual Studio 15 2017" cmake -G "%gen%" .
+  - IF "%gen%" == "Visual Studio 15 2017" msbuild ASL.sln /p:Configuration=Debug;Platform=Win32 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false

@@ -1,0 +1,146 @@
+# this file is HEAVILY influenced by https://github.com/onqtam/doctest/blob/master/.travis.yml
+
+dist: trusty
+sudo: false
+language: cpp
+
+git:
+  depth: 500
+
+addons:
+  apt:
+    sources: &apt_sources
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty
+      - llvm-toolchain-trusty-7
+
+matrix:
+  include:
+    # GCC 8
+    - env: COMPILER=g++-8 HAS_ASAN=true HAS_UBSAN=true HAS_TSAN=true SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
+      compiler: gcc
+      sudo: required
+      os: linux
+      addons: &gcc8
+        apt:
+          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-6", "valgrind"]
+          sources: *apt_sources
+
+    # Clang 7.0
+    - env: COMPILER=clang++-7 HAS_ASAN=true HAS_UBSAN=true HAS_TSAN=true
+      compiler: clang
+      os: linux
+      addons: &clang7
+        apt:
+          packages: ["clang-7", "g++-6-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-6", "valgrind"]
+          sources: *apt_sources
+      
+    # Xcode 10.1 Clang
+    - env: COMPILER=clang++ HAS_ASAN=true HAS_UBSAN=true HAS_TSAN=true
+      compiler: clang
+      osx_image: xcode10.1
+      os: osx
+
+install:
+  ############################################################################
+  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  ############################################################################
+
+  # Make a directory for all
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+
+    # Install a recent CMake
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://www.cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    fi
+
+  # Go back to ${TRAVIS_BUILD_DIR}
+  - cd ${TRAVIS_BUILD_DIR}
+  # export CXX compiler
+  - export CXX="${COMPILER}"
+
+  ############################################################################
+  # Install stuff with homebrew under OSX
+  ############################################################################
+
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew update
+      # brew install ccache
+      # brew install valgrind
+      # cmake
+      if brew list -1 | grep -q "^cmake\$"; then
+        brew outdated cmake || brew upgrade cmake
+      else
+        brew install cmake
+      fi
+    fi
+  - export CXX="${COMPILER}"
+#  - export CXX="ccache ${COMPILER}"
+#  - ccache -s
+
+before_script:
+  - ${CXX} --version
+  - cmake --version
+
+script:
+  # initial run with options
+  - cmake ${CMAKE_OPTIONS_GLOBAL} ${CMAKE_OPTIONS} -DCMAKE_CXX_COMPILER=${CXX} .
+
+  ############################################################################
+  # Debug x64
+  ############################################################################
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x64 .
+  - make clean && make -k -j2
+  - ctest -j2 --output-on-failure .
+  ############################################################################
+  # Release x64
+  ############################################################################
+  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 .
+  - make clean && make -k -j2
+  - ctest -j2 --output-on-failure .
+  ############################################################################
+  # Debug x86
+  ############################################################################
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 .
+  - make clean && make -k -j2
+  - ctest -j2 --output-on-failure .
+  ############################################################################
+  # Release x86
+  ############################################################################
+  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 .
+  - make clean && make -k -j2
+  - ctest -j2 --output-on-failure .
+  ############################################################################
+  # Test with Sanitizers
+  ############################################################################
+  # Address Sanitizer
+  - export ASAN_OPTIONS=verbosity=2:strict_string_checks=true:detect_odr_violation=2:detect_stack_use_after_return=true:check_initialization_order=true:strict_init_order=true
+  # x86
+  - if [[ "${HAS_ASAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x86  ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=address                             . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_ASAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86  ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=address                             . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  # x64
+  - if [[ "${HAS_ASAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x64  ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=address                             . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_ASAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64  ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=address                             . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+
+  # Undefined Behaviour Sanitizer
+  - export UBSAN_OPTIONS=verbosity=2
+  # x86
+  - if [[ "${HAS_UBSAN}" = "true" ]]; then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x86 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=undefined                           . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_UBSAN}" = "true" ]]; then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=undefined                           . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  # x64
+  - if [[ "${HAS_UBSAN}" = "true" ]]; then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x64 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=undefined                           . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_UBSAN}" = "true" ]]; then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=undefined                           . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+
+  # Thread Sanitizer
+  - export TSAN_OPTIONS=verbosity=2:force_seq_cst_atomics=1
+  # x86
+  - if [[ "${HAS_TSAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x86 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -pie -fPIE ${TSAN_CXX_FLAGS} . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_TSAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -pie -fPIE ${TSAN_CXX_FLAGS} . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  # x64
+  - if [[ "${HAS_TSAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Debug   -DARCH=x64 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -pie -fPIE ${TSAN_CXX_FLAGS} . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
+  - if [[ "${HAS_TSAN}" = "true" ]];  then cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 ${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -pie -fPIE ${TSAN_CXX_FLAGS} . && make clean && make -k -j2 && ctest -j2 --output-on-failure ; fi
