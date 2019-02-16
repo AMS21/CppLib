@@ -37,28 +37,28 @@ build_script:
   # ============= VISUAL STUDIO
   # x64 Debug
   - cmake -G "%gen% Win64" -DCMAKE_BUILD_TYPE=Debug .
-  - msbuild ASL.sln /p:Configuration=Debug;Platform="x64" /maxcpucount
+  - msbuild CppLib.sln /p:Configuration=Debug;Platform="x64" /maxcpucount
   - ctest --output-on-failure -C Debug .
   # x64 Release
   - cmake -G "%gen% Win64" -DCMAKE_BUILD_TYPE=Release .
-  - msbuild ASL.sln /p:Configuration=Release;Platform="x64" /maxcpucount
+  - msbuild CppLib.sln /p:Configuration=Release;Platform="x64" /maxcpucount
   - ctest --output-on-failure -C Release .
   # Remove Cache file
   - del CMakeCache.txt /F
   # x86 Debug
   - cmake -G "%gen%" -DCMAKE_BUILD_TYPE=Debug .
-  - msbuild ASL.sln /p:Configuration=Debug;Platform="Win32" /maxcpucount
+  - msbuild CppLib.sln /p:Configuration=Debug;Platform="Win32" /maxcpucount
   - ctest --output-on-failure -C Debug .
   # x86 Release
   - cmake -G "%gen%" -DCMAKE_BUILD_TYPE=Release .
-  - msbuild ASL.sln /p:Configuration=Release;Platform="Win32" /maxcpucount
+  - msbuild CppLib.sln /p:Configuration=Release;Platform="Win32" /maxcpucount
   - ctest --output-on-failure -C Release .
   # Remove Cache file
   - del CMakeCache.txt /F
   # static code analysis on MSVC 2017
   - IF "%gen%" == "Visual Studio 15 2017" cmake -G "%gen% Win64" .
-  - IF "%gen%" == "Visual Studio 15 2017" msbuild ASL.sln /p:Configuration=Debug;Platform=x64 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false
+  - IF "%gen%" == "Visual Studio 15 2017" msbuild CppLib.sln /p:Configuration=Debug;Platform=x64 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false
   # Remove Cache file
   - del CMakeCache.txt /F
   - IF "%gen%" == "Visual Studio 15 2017" cmake -G "%gen%" .
-  - IF "%gen%" == "Visual Studio 15 2017" msbuild ASL.sln /p:Configuration=Debug;Platform=Win32 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false
+  - IF "%gen%" == "Visual Studio 15 2017" msbuild CppLib.sln /p:Configuration=Debug;Platform=Win32 /maxcpucount /p:RunCodeAnalysis=true /p:CodeAnalysisTreatWarningsAsErrors=false
