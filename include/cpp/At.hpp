@@ -16,7 +16,7 @@ namespace cpp
     * \throws std::out_of_range if 'index' is out of bounds.
     **/
     template <typename Type, std::size_t Size>
-    constexpr Type& at(Type(&arr)[Size], std::size_t index)
+    constexpr Type& at(Type (&arr)[Size], std::size_t index)
     {
         CPP_DBG_CHECK_BOUNDS(index, 0, Size - 1);
 
@@ -32,8 +32,7 @@ namespace cpp
     * \throws std::out_of_range if 'index' is out of bounds.
     **/
     template <typename Container>
-    constexpr auto at(Container& container, std::size_t index)
-        -> decltype(container[container.size()])
+    constexpr auto at(Container& container, std::size_t index) -> decltype(container[container.size()])
     {
         CPP_DBG_CHECK_BOUNDS(index, 0, container.size() - 1);
 
@@ -55,4 +54,4 @@ namespace cpp
 
         return *(il.begin() + index);
     }
-}
+} // namespace cpp

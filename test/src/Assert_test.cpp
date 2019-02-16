@@ -8,7 +8,7 @@ CPP_DEFINE_EXCEPTION_TYPE(TestExcept, std::runtime_error);
 TEST_CASE("define exception type")
 {
     CHECK_THROWS_AS(throw TestExcept("Test"), TestExcept);
-    CHECK_THROWS_AS(throw TestExcept(std::string { "Test" }), TestExcept);
+    CHECK_THROWS_AS(throw TestExcept(std::string{"Test"}), TestExcept);
 }
 
 TEST_CASE("throw with source info")
@@ -20,17 +20,14 @@ TEST_CASE("throw with source info")
 TEST_CASE("throw if null")
 {
     int* p1 = nullptr;
-    int i = 5;
+    int  i  = 5;
     int* p2 = &i;
 
     CHECK_THROWS_AS(CPP_THROW_IF_NULL(p1), cpp::NullPointerException);
     CHECK_NOTHROW(CPP_THROW_IF_NULL(p2));
 }
 
-TEST_CASE("not yet implemented")
-{
-    CHECK_THROWS_AS(CPP_NOT_YET_IMPLEMENTED, cpp::NotYetImplementedException);
-}
+TEST_CASE("not yet implemented") { CHECK_THROWS_AS(CPP_NOT_YET_IMPLEMENTED, cpp::NotYetImplementedException); }
 
 TEST_CASE("check pre")
 {

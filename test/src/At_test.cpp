@@ -5,12 +5,9 @@
 
 TEST_CASE("at - array")
 {
-    int arr[] = { 0, 1, 2, 3, 4, 5 };
+    int arr[] = {0, 1, 2, 3, 4, 5};
 
-    for (std::size_t i { 0 }; i < 6; ++i)
-    {
-        CHECK_EQ(cpp::at(arr, i), i);
-    }
+    for (std::size_t i{0}; i < 6; ++i) { CHECK_EQ(cpp::at(arr, i), i); }
 
     // Out of Bounds access
 #if defined(CPP_DEBUG)
@@ -20,17 +17,11 @@ TEST_CASE("at - array")
 
 TEST_CASE("at - container")
 {
-    std::vector<int> v {};
+    std::vector<int> v{};
 
-    for (int i { 0 }; i < 6; ++i)
-    {
-        v.emplace_back(i);
-    }
+    for (int i{0}; i < 6; ++i) { v.emplace_back(i); }
 
-    for (std::size_t i { 0 }; i < 6; ++i)
-    {
-        CHECK_EQ(cpp::at(v, i), i);
-    }
+    for (std::size_t i{0}; i < 6; ++i) { CHECK_EQ(cpp::at(v, i), i); }
 
     // Out of Bounds access
 #if defined(CPP_DEBUG)
@@ -40,12 +31,9 @@ TEST_CASE("at - container")
 
 TEST_CASE("at - initializer_lists")
 {
-    std::initializer_list<int> li { 0,1,2,3,4,5 };
+    std::initializer_list<int> li{0, 1, 2, 3, 4, 5};
 
-    for (std::size_t i { 0 }; i < 6; ++i)
-    {
-        CHECK_EQ(cpp::at(li, i), i);
-    }
+    for (std::size_t i{0}; i < 6; ++i) { CHECK_EQ(cpp::at(li, i), i); }
 
     // Out of Bounds access
 #if defined(CPP_DEBUG)

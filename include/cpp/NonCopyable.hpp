@@ -14,9 +14,9 @@ namespace cpp
     private:
         NonCopyable(const NonCopyable&) = delete;
 
-        NonCopyable& operator =(const NonCopyable&) = delete;
+        NonCopyable& operator=(const NonCopyable&) = delete;
     };
-} // namespace: cpp
+} // namespace cpp
 
 /*!
  * \def CPP_NONCOPYABLE(type_identifier)
@@ -24,6 +24,6 @@ namespace cpp
  *        Pass the identifier of the type into this macro.
  *        Used to declare a type as noncopyable.
 **/
-#define CPP_NONCOPYABLE(type_identifier)               \
-    type_identifier(const type_identifier&) = delete;  \
+#define CPP_NONCOPYABLE(type_identifier)                                                                               \
+    type_identifier(const type_identifier&) = delete;                                                                  \
     type_identifier& operator=(const type_identifier&) = delete
