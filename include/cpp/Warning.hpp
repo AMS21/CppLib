@@ -36,7 +36,7 @@
 /* GCC Warnings */
 #if CPP_COMPILER_IS(CPP_COMPILER_GCC)
 #   define DETAIL_CPP_PRAGMA_TO_STR(string)  _Pragma(#string)
-#   if CPP_COMPILER_VERSION_REQUIRE(4, 7, 0)
+#   if CPP_COMPILER_VERSION_IS_ATLEAST(4, 7, 0)
 #       define CPP_GCC_SUPPRESS_WARNING_PUSH _Pragma("GCC diagnostic push")
 #       define CPP_GCC_SUPPRESS_WARNING_POP  _Pragma("GCC diagnostic pop")
 #   else
