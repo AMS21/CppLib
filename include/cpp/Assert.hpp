@@ -6,6 +6,7 @@
 #include "SourceLine.hpp"
 
 #include <exception>
+#include <stdexcept>
 #include <string>
 
 ////////////////////////////////////////////////////////////
