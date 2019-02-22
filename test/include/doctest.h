@@ -47,8 +47,8 @@
 
 #define DOCTEST_VERSION_MAJOR 2
 #define DOCTEST_VERSION_MINOR 2
-#define DOCTEST_VERSION_PATCH 2
-#define DOCTEST_VERSION_STR "2.2.2"
+#define DOCTEST_VERSION_PATCH 3
+#define DOCTEST_VERSION_STR "2.2.3"
 
 #define DOCTEST_VERSION                                                                            \
     (DOCTEST_VERSION_MAJOR * 10000 + DOCTEST_VERSION_MINOR * 100 + DOCTEST_VERSION_PATCH)
@@ -289,6 +289,8 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26444) // Avoid unnamed objects with custom constr
 #else  // DOCTEST_CONFIG_IMPLEMENTATION_IN_DLL
 #define DOCTEST_INTERFACE
 #endif // DOCTEST_CONFIG_IMPLEMENTATION_IN_DLL
+
+#define DOCTEST_EMPTY
 
 #if DOCTEST_MSVC
 #define DOCTEST_NOINLINE __declspec(noinline)
@@ -1785,11 +1787,13 @@ int registerReporter(const char* name, int priority, IReporter& r);
 #endif // DOCTEST_CONFIG_NO_TRY_CATCH_IN_ASSERTS
 
 // registers the test by initializing a dummy var with a function
-#define DOCTEST_REGISTER_FUNCTION(f, decorators)                                                   \
-    DOCTEST_GLOBAL_NO_WARNINGS(DOCTEST_ANONYMOUS(_DOCTEST_ANON_VAR_)) = doctest::detail::regTest(  \
-            doctest::detail::TestCase(f, __FILE__, __LINE__,                                       \
-                                      doctest_detail_test_suite_ns::getCurrentTestSuite()) *       \
-            decorators);                                                                           \
+#define DOCTEST_REGISTER_FUNCTION(global_prefix, f, decorators)                                    \
+    global_prefix DOCTEST_GLOBAL_NO_WARNINGS(DOCTEST_ANONYMOUS(_DOCTEST_ANON_VAR_)) =              \
+            doctest::detail::regTest(                                                              \
+                    doctest::detail::TestCase(                                                     \
+                            f, __FILE__, __LINE__,                                                 \
+                            doctest_detail_test_suite_ns::getCurrentTestSuite()) *                 \
+                    decorators);                                                                   \
     DOCTEST_GLOBAL_NO_WARNINGS_END()
 
 #define DOCTEST_IMPLEMENT_FIXTURE(der, base, func, decorators)                                     \
@@ -1802,18 +1806,29 @@ int registerReporter(const char* name, int priority, IReporter& r);
             der v;                                                                                 \
             v.f();                                                                                 \
         }                                                                                          \
-        DOCTEST_REGISTER_FUNCTION(func, decorators)                                                \
+        DOCTEST_REGISTER_FUNCTION(DOCTEST_EMPTY, func, decorators)                                 \
     }                                                                                              \
     inline DOCTEST_NOINLINE void der::f()
 
 #define DOCTEST_CREATE_AND_REGISTER_FUNCTION(f, decorators)                                        \
     static void f();                                                                               \
-    DOCTEST_REGISTER_FUNCTION(f, decorators)                                                       \
+    DOCTEST_REGISTER_FUNCTION(DOCTEST_EMPTY, f, decorators)                                        \
+    static void f()
+
+#define DOCTEST_CREATE_AND_REGISTER_FUNCTION_IN_CLASS(f, proxy, decorators)                        \
+    static doctest::detail::funcType proxy() { return f; }                                         \
+    DOCTEST_REGISTER_FUNCTION(inline const, proxy(), decorators)                                   \
     static void f()
 
 // for registering tests
 #define DOCTEST_TEST_CASE(decorators)                                                              \
     DOCTEST_CREATE_AND_REGISTER_FUNCTION(DOCTEST_ANONYMOUS(_DOCTEST_ANON_FUNC_), decorators)
+
+// for registering tests in classes - requires C++17 for inline variables!
+#define DOCTEST_TEST_CASE_CLASS(decorators)                                                        \
+    DOCTEST_CREATE_AND_REGISTER_FUNCTION_IN_CLASS(DOCTEST_ANONYMOUS(_DOCTEST_ANON_FUNC_),          \
+                                                  DOCTEST_ANONYMOUS(_DOCTEST_ANON_PROXY_),         \
+                                                  decorators)
 
 // for registering tests with a fixture
 #define DOCTEST_TEST_CASE_FIXTURE(c, decorators)                                                   \
@@ -2263,6 +2278,10 @@ constexpr T to_lvalue = x;
 #define DOCTEST_TEST_CASE(name)                                                                    \
     DOCTEST_CREATE_AND_REGISTER_FUNCTION(DOCTEST_ANONYMOUS(_DOCTEST_ANON_FUNC_), name)
 
+// for registering tests in classes
+#define DOCTEST_TEST_CASE_CLASS(name)                                                              \
+    DOCTEST_CREATE_AND_REGISTER_FUNCTION(DOCTEST_ANONYMOUS(_DOCTEST_ANON_FUNC_), name))
+
 // for registering tests with a fixture
 #define DOCTEST_TEST_CASE_FIXTURE(x, name)                                                         \
     DOCTEST_IMPLEMENT_FIXTURE(DOCTEST_ANONYMOUS(_DOCTEST_ANON_CLASS_), x,                          \
@@ -2411,6 +2430,7 @@ constexpr T to_lvalue = x;
 // BDD style macros
 // clang-format off
 #define DOCTEST_SCENARIO(name) DOCTEST_TEST_CASE("  Scenario: " name)
+#define DOCTEST_SCENARIO_CLASS(name) DOCTEST_TEST_CASE_CLASS("  Scenario: " name)
 #define DOCTEST_SCENARIO_TEMPLATE(name, T, ...)  DOCTEST_TEST_CASE_TEMPLATE("  Scenario: " name, T, __VA_ARGS__)
 #define DOCTEST_SCENARIO_TEMPLATE_DEFINE(name, T, id) DOCTEST_TEST_CASE_TEMPLATE_DEFINE("  Scenario: " name, T, id)
 
@@ -2425,6 +2445,7 @@ constexpr T to_lvalue = x;
 #if !defined(DOCTEST_CONFIG_NO_SHORT_MACRO_NAMES)
 
 #define TEST_CASE DOCTEST_TEST_CASE
+#define TEST_CASE_CLASS DOCTEST_TEST_CASE_CLASS
 #define TEST_CASE_FIXTURE DOCTEST_TEST_CASE_FIXTURE
 #define TYPE_TO_STRING DOCTEST_TYPE_TO_STRING
 #define TEST_CASE_TEMPLATE DOCTEST_TEST_CASE_TEMPLATE
@@ -2485,6 +2506,7 @@ constexpr T to_lvalue = x;
 #define REQUIRE_NOTHROW_MESSAGE DOCTEST_REQUIRE_NOTHROW_MESSAGE
 
 #define SCENARIO DOCTEST_SCENARIO
+#define SCENARIO_CLASS DOCTEST_SCENARIO_CLASS
 #define SCENARIO_TEMPLATE DOCTEST_SCENARIO_TEMPLATE
 #define SCENARIO_TEMPLATE_DEFINE DOCTEST_SCENARIO_TEMPLATE_DEFINE
 #define GIVEN DOCTEST_GIVEN
@@ -3581,9 +3603,7 @@ namespace detail {
 namespace {
     using namespace detail;
     // for sorting tests by file/line
-    int fileOrderComparator(const void* a, const void* b) {
-        auto lhs = *static_cast<TestCase* const*>(a);
-        auto rhs = *static_cast<TestCase* const*>(b);
+    bool fileOrderComparator(const TestCase* lhs, const TestCase* rhs) {
 #if DOCTEST_MSVC
         // this is needed because MSVC gives different case for drive letters
         // for __FILE__ when evaluated in a header and a source file
@@ -3592,30 +3612,24 @@ namespace {
         const int res = std::strcmp(lhs->m_file, rhs->m_file);
 #endif // MSVC
         if(res != 0)
-            return res;
-        return static_cast<int>(lhs->m_line) - static_cast<int>(rhs->m_line);
+            return res < 0;
+        return lhs->m_line < rhs->m_line;
     }
 
     // for sorting tests by suite/file/line
-    int suiteOrderComparator(const void* a, const void* b) {
-        auto lhs = *static_cast<TestCase* const*>(a);
-        auto rhs = *static_cast<TestCase* const*>(b);
-
+    bool suiteOrderComparator(const TestCase* lhs, const TestCase* rhs) {
         const int res = std::strcmp(lhs->m_test_suite, rhs->m_test_suite);
         if(res != 0)
-            return res;
-        return fileOrderComparator(a, b);
+            return res < 0;
+        return fileOrderComparator(lhs, rhs);
     }
 
     // for sorting tests by name/suite/file/line
-    int nameOrderComparator(const void* a, const void* b) {
-        auto lhs = *static_cast<TestCase* const*>(a);
-        auto rhs = *static_cast<TestCase* const*>(b);
-
-        const int res_name = std::strcmp(lhs->m_name, rhs->m_name);
-        if(res_name != 0)
-            return res_name;
-        return suiteOrderComparator(a, b);
+    bool nameOrderComparator(const TestCase* lhs, const TestCase* rhs) {
+        const int res = std::strcmp(lhs->m_name, rhs->m_name);
+        if(res != 0)
+            return res < 0;
+        return suiteOrderComparator(lhs, rhs);
     }
 
     // all the registered tests
@@ -4311,7 +4325,7 @@ namespace {
               << p.numAssertsFailed << " failed" << Color::None << " |\n";
             s << Color::Cyan << "[doctest] " << Color::None
               << "Status: " << (p.numTestCasesFailed > 0 ? Color::Red : Color::Green)
-              << ((p.numTestCasesFailed > 0) ? "FAILURE!\n" : "SUCCESS!\n") << Color::None;
+              << ((p.numTestCasesFailed > 0) ? "FAILURE!" : "SUCCESS!") << Color::None << std::endl;
         }
 
         void test_case_start(const TestCaseData& in) override {
@@ -5013,11 +5027,11 @@ int Context::run() {
     // sort the collected records
     if(!testArray.empty()) {
         if(p->order_by.compare("file", true) == 0) {
-            std::qsort(&testArray[0], testArray.size(), sizeof(TestCase*), fileOrderComparator);
+            std::sort(testArray.begin(), testArray.end(), fileOrderComparator);
         } else if(p->order_by.compare("suite", true) == 0) {
-            std::qsort(&testArray[0], testArray.size(), sizeof(TestCase*), suiteOrderComparator);
+            std::sort(testArray.begin(), testArray.end(), suiteOrderComparator);
         } else if(p->order_by.compare("name", true) == 0) {
-            std::qsort(&testArray[0], testArray.size(), sizeof(TestCase*), nameOrderComparator);
+            std::sort(testArray.begin(), testArray.end(), nameOrderComparator);
         } else if(p->order_by.compare("rand", true) == 0) {
             std::srand(p->rand_seed);
 
@@ -5257,7 +5271,9 @@ void DOCTEST_FIX_FOR_MACOS_LIBCPP_IOSFWD_STRING_LINK_ERRORS() { std::cout << std
 #endif // DOCTEST_CONFIG_DISABLE
 
 #ifdef DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+DOCTEST_MSVC_SUPPRESS_WARNING_WITH_PUSH(4007) // 'function' : must be 'attribute' - see issue #182
 int main(int argc, char** argv) { return doctest::Context(argc, argv).run(); }
+DOCTEST_MSVC_SUPPRESS_WARNING_POP
 #endif // DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 DOCTEST_CLANG_SUPPRESS_WARNING_POP
@@ -5266,3 +5282,4 @@ DOCTEST_GCC_SUPPRESS_WARNING_POP
 
 #endif // DOCTEST_LIBRARY_IMPLEMENTATION
 #endif // DOCTEST_CONFIG_IMPLEMENT
+
