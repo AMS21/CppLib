@@ -2,7 +2,7 @@
 # V. 1.1.0
 
 ## GLOBAL SETTINGS
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 
 # Project
 project( "CppLib" CXX )
@@ -180,7 +180,7 @@ if (CPPLIB_BUILD_TESTS)
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "-Wno-unused-function")
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "-Wno-missing-declarations")
 
-		if (CMAKE_CXX_COMPILER_VERSION GREATER_EQUAL 4.5)
+		if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.5)
 			target_compile_options(${UNIT_TEST_NAME} PRIVATE "-Wno-error=suggest-attribute=noreturn")
 		endif()
 
