@@ -623,3 +623,11 @@ CMakeDoxyfile.in
 CPackConfig.cmake
 CPackSourceConfig.cmake
 spdlogConfigVersion.cmake
+
+# CodeLite
+.codelite/
+*.project
+*.workspace
+
+# Targets
+cpplib_tests
