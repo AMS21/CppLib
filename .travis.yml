@@ -94,35 +94,31 @@ script:
   ############################################################################
   # Debug x64
   ############################################################################
-  - mkdir Debug_64 && cd Debug_64
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x64 ..
-  - make clean && make -k -j2
-  - ctest -j2 --output-on-failure ..
-  - cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x64 .
+  - make clean
+  - make -k -j2
+  - ctest -j2 --output-on-failure .
   ############################################################################
   # Release x64
   ############################################################################
-  - mkdir Release_64 && cd Release_64
-  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 ..
-  - make clean && make -k -j2
-  - ctest -j2 --output-on-failure ..
-  - cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 .
+  - make clean
+  - make -k -j2
+  - ctest -j2 --output-on-failure .
   ############################################################################
   # Debug x86
   ############################################################################
-  - mkdir Debug_86 && cd Debug_86
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 ..
-  - make clean && make -k -j2
-  - ctest -j2 --output-on-failure ..
-  - cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 .
+  - make clean 
+  - make -k -j2
+  - ctest -j2 --output-on-failure .
   ############################################################################
   # Release x86
   ############################################################################
-  - mkdir Release_86 && cd Release_86
-  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 ..
-  - make clean && make -k -j2
-  - ctest -j2 --output-on-failure ..
-  - cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 .
+  - make clean 
+  - make -k -j2
+  - ctest -j2 --output-on-failure .
   ############################################################################
   # Test with Sanitizers
   ############################################################################
