@@ -22,17 +22,17 @@ build_script:
   - IF "%gen%" == "MinGW" ctest --output-on-failure .
   # Release x64
   - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x64 -DCMAKE_BUILD_TYPE=Release
-  - IF "%gen%" == "MinGW" make clean
+  - IF "%gen%" == "MinGW" rmdir /S /Q CMakeFiles
   - IF "%gen%" == "MinGW" cmake --build . -- -j2
   - IF "%gen%" == "MinGW" ctest --output-on-failure .
   # Debug x86
   - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Debug
-  - IF "%gen%" == "MinGW" make clean
+  - IF "%gen%" == "MinGW" rmdir /S /Q CMakeFiles
   - IF "%gen%" == "MinGW" cmake --build . -- -j2
   - IF "%gen%" == "MinGW" ctest --output-on-failure .
   # Release x86
   - IF "%gen%" == "MinGW" cmake . -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Release
-  - IF "%gen%" == "MinGW" make clean
+  - IF "%gen%" == "MinGW" rmdir /S /Q CMakeFiles
   - IF "%gen%" == "MinGW" cmake --build . -- -j2
   - IF "%gen%" == "MinGW" ctest --output-on-failure .
   # Exit
