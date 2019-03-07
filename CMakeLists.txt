@@ -42,7 +42,7 @@ endif()
 if (CPPLIB_BUILD_TESTS)
 	enable_testing()
 
-	set(UNIT_TEST_NAME "cpplib_tests")
+	set(UNIT_TEST_NAME "${LIBRARY_NAME}_tests")
 
 	file(GLOB_RECURSE TEST_HEADERS
 		"test/include/*.hpp")
