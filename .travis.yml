@@ -89,7 +89,7 @@ before_script:
 
 script:
   # initial run with options
-  - cmake ${CMAKE_OPTIONS_GLOBAL} ${CMAKE_OPTIONS} -DCMAKE_CXX_COMPILER=${CXX} .
+  # - cmake ${CMAKE_OPTIONS_GLOBAL} ${CMAKE_OPTIONS} -DCMAKE_CXX_COMPILER=${CXX} .
 
   ############################################################################
   # Debug x64
