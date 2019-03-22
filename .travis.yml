@@ -94,39 +94,27 @@ script:
   ############################################################################
   # Debug x64
   ############################################################################
-  - mkdir Debug_x64
-  - cd Debug_x64
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x64 ..
-  - cmake --build . -- -j2
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x64 .
+  - cmake --build . --clean-first -- -j2
   - ctest -j2 --output-on-failure .
-  - cd ..
   ############################################################################
   # Release x64
   ############################################################################
-  - mkdir Release_x64
-  - cd Release_x64
-  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 ..
-  - cmake --build . -- -j2
+  - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x64 .
+  - cmake --build . --clean-first -- -j2
   - ctest -j2 --output-on-failure .
-  - cd ..
   ############################################################################
   # Debug x86
   ############################################################################
-  - mkdir Debug_x86
-  - cd Debug_x86
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 ..
-  - cmake --build . -- -j2
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 .
+  - cmake --build . --clean-first -- -j2
   - ctest -j2 --output-on-failure .
-  - cd ..
   ############################################################################
   # Release x86
   ############################################################################
-  - mkdir Release_x86
-  - cd Release_x86
   - cmake -DCMAKE_BUILD_TYPE=Release -DARCH=x86 ..
-  - cmake --build . -- -j2
+  - cmake --build . --clean-first -- -j2
   - ctest -j2 --output-on-failure .
-  - cd ..
   ############################################################################
   # Test with Sanitizers
   ############################################################################
