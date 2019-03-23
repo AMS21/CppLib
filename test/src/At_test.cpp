@@ -1,11 +1,7 @@
 #include "cpp/At.hpp"
-#include "cpp/Warning.hpp"
 #include "doctest.h"
 #include <cstdint>
 #include <vector>
-
-CPP_MSVC_SUPPRESS_WARNING_PUSH
-CPP_MSVC_SUPPRESS_WARNING(4548) // expression before comma has no effect; expected expression with side-effect
 
 TEST_CASE("at - array")
 {
@@ -44,5 +40,3 @@ TEST_CASE("at - initializer_lists")
     CHECK_THROWS_AS(cpp::at(li, 6), cpp::IndexOutOfBoundsException);
 #endif
 }
-
-CPP_MSVC_SUPPRESS_WARNING_POP
