@@ -89,6 +89,7 @@ if (CPPLIB_BUILD_TESTS)
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "/wd4820") # 'bytes' bytes padding added after construct 'member_name' - https://msdn.microsoft.com/en-us/library/t7khkyth.aspx
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "/wd5026") # 'x': move constructor was implicitly defined as deleted
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "/wd5027") # 'x': move assignment operator was implicitly defined as deleted
+		target_compile_options(${UNIT_TEST_NAME} PRIVATE "/wd4548") # expression before comma has no effect; expected expression with side-effect
 
 		# Treat warnings as errors when using msvc.
 		target_compile_options(${UNIT_TEST_NAME} PRIVATE "/WX")
