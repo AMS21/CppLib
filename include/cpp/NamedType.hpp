@@ -9,6 +9,7 @@
 // Added PostIncrementable
 // Added Divisible
 
+#include "Warning.hpp"
 #include <iostream>    // std::ostream
 #include <memory>      // std::addressof
 #include <type_traits> // std::remove_reference_t, std::enable_if, std::remove_reference_t
@@ -43,7 +44,7 @@ namespace cpp
         using type = T;
 
         // constructor
-        template <typename T_ = T, typename = std::enable_if<std::is_default_constructible_v<T>, void>>
+        template <typename T_ = T, typename = std::enable_if<std::is_default_constructible<T>::value, void>>
         constexpr NamedType() noexcept(noexcept(T()))
         {}
 
@@ -101,6 +102,9 @@ namespace cpp
         }
     };
 
+    CPP_GCC_SUPPRESS_WARNING_PUSH
+    CPP_GCC_SUPPRESS_WARNING("-Werror=effc++")
+
     template <typename T>
     struct PreIncrementable : detail::crtp<T, PreIncrementable>
     {
@@ -116,6 +120,8 @@ namespace cpp
     {
         T operator++(int) { return this->underlying().get()++; }
     };
+
+    CPP_GCC_SUPPRESS_WARNING_POP
 
     template <typename T>
     struct Addable : detail::crtp<T, Addable>

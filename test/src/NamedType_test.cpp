@@ -161,16 +161,16 @@ TEST_CASE("ConvertibleWithOperator")
 {
     struct B
     {
-        B(int x)
-            : x(x)
+        B(int x_)
+            : x(x_)
         {}
         int x;
     };
 
     struct A
     {
-        A(int x)
-            : x(x)
+        A(int x_)
+            : x(x_)
         {}
             operator B() const { return B(x); }
         int x;
@@ -186,8 +186,8 @@ TEST_CASE("ConvertibleWithConstructor")
 {
     struct A
     {
-        A(int x)
-            : x(x)
+        A(int x_)
+            : x(x_)
         {}
         int x;
     };
@@ -228,8 +228,8 @@ TEST_CASE("Hash")
 
 struct testFunctionCallable_A
 {
-    testFunctionCallable_A(int x)
-        : x(x)
+    testFunctionCallable_A(int x_)
+        : x(x_)
     {}
     testFunctionCallable_A(testFunctionCallable_A const&) =
             delete; // ensures that passing the argument to a function doesn't make a copy
@@ -267,8 +267,8 @@ TEST_CASE("Method callable")
     class A
     {
     public:
-        A(int x)
-            : x(x)
+        A(int x_)
+            : x(x_)
         {}
         A(A const&) = delete; // ensures that invoking a method doesn't make a copy
         A(A&&)      = default;
@@ -292,8 +292,8 @@ TEST_CASE("Callable")
     class A
     {
     public:
-        A(int x)
-            : x(x)
+        A(int x_)
+            : x(x_)
         {}
         A(A const&) = delete; // ensures that invoking a method or function doesn't make a copy
         A(A&&)      = default;
