@@ -108,6 +108,8 @@ TEST_CASE("Subtractable")
     SubtractableType s1(12);
     SubtractableType s2(10);
     CHECK_EQ((s1 - s2).get(), 2);
+    s1 -= s2;
+    CHECK_EQ(s1.get(), 2);
 }
 
 TEST_CASE("Multiplicable")
@@ -116,6 +118,8 @@ TEST_CASE("Multiplicable")
     MultiplicableType s1(12);
     MultiplicableType s2(10);
     CHECK_EQ((s1 * s2).get(), 120);
+    s1 *= s2;
+    CHECK_EQ(s1.get(), 120);
 }
 
 TEST_CASE("Divisible")
@@ -124,6 +128,8 @@ TEST_CASE("Divisible")
     DivisibleType s1(120);
     DivisibleType s2(10);
     CHECK_EQ((s1 / s2).get(), 12);
+    s1 /= s2;
+    CHECK_EQ(s1.get(), 12);
 }
 
 TEST_CASE("Negatable")
@@ -362,7 +368,23 @@ TEST_CASE("Arithmetic")
     strong_integer b{2};
 
     CHECK_EQ((a + b).get(), 3);
+
     a += b;
     CHECK_EQ(a.get(), 3);
+
     CHECK_EQ((a - b).get(), 1);
+
+    a -= b;
+    CHECK_EQ(a.get(), 1);
+
+    a.get() = 5;
+    CHECK_EQ((a * b).get(), 10);
+
+    a *= b;
+    CHECK_EQ(a.get(), 10);
+
+    CHECK_EQ((a / b).get(), 5);
+
+    a /= b;
+    CHECK_EQ(a.get(), 5);
 }
