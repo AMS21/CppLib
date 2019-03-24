@@ -58,9 +58,9 @@ namespace cpp
         {}
 
         // get
-        constexpr T& get() noexcept { return mValue; }
+        [[nodiscard]] constexpr T& get() noexcept { return mValue; }
 
-        constexpr const std::remove_reference_t<T>& get() const noexcept { return mValue; }
+        [[nodiscard]] constexpr const std::remove_reference_t<T>& get() const noexcept { return mValue; }
 
         // conversions
         using ref = NamedType<T&, Parameter, Skills...>;
