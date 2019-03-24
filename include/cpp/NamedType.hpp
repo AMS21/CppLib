@@ -103,7 +103,7 @@ namespace cpp
     };
 
     CPP_GCC_SUPPRESS_WARNING_PUSH
-    CPP_GCC_SUPPRESS_WARNING("-Werror=effc++")
+    CPP_GCC_SUPPRESS_WARNING("-Weffc++")
 
     template <typename T>
     struct PreIncrementable : detail::crtp<T, PreIncrementable>
