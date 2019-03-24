@@ -94,7 +94,7 @@ namespace cpp
     template <typename T>
     struct Incrementable : detail::crtp<T, Incrementable>
     {
-        T& operator+=(T const& other)
+        T& operator+=(const T& other)
         {
             this->underlying().get() += other.get();
             return this->underlying();
@@ -126,19 +126,34 @@ namespace cpp
     template <typename T>
     struct Subtractable : detail::crtp<T, Subtractable>
     {
-        T operator-(const T& other) const { return T(this->underlying().get() - other.get()); }
+        T  operator-(const T& other) const { return T(this->underlying().get() - other.get()); }
+        T& operator-=(const T& other)
+        {
+            this->underlying().get() -= other.get();
+            return this->underlying();
+        }
     };
 
     template <typename T>
     struct Multiplicable : detail::crtp<T, Multiplicable>
     {
-        T operator*(const T& other) const { return T(this->underlying().get() * other.get()); }
+        T  operator*(const T& other) const { return T(this->underlying().get() * other.get()); }
+        T& operator*=(const T& other)
+        {
+            this->underlying().get() *= other.get();
+            return this->underlying();
+        }
     };
 
     template <typename T>
     struct Divisible : detail::crtp<T, Divisible>
     {
-        T operator/(const T& other) const { return T(this->underlying().get() / other.get()); }
+        T  operator/(const T& other) const { return T(this->underlying().get() / other.get()); }
+        T& operator/=(const T& other)
+        {
+            this->underlying().get() /= other.get();
+            return this->underlying();
+        }
     };
 
     template <typename T>
@@ -150,12 +165,12 @@ namespace cpp
     template <typename T>
     struct Comparable : detail::crtp<T, Comparable>
     {
-        bool operator<(T const& other) const { return this->underlying().get() < other.get(); }
-        bool operator>(T const& other) const { return other.get() < this->underlying().get(); }
-        bool operator<=(T const& other) const { return !(other.get() < this->underlying().get()); }
-        bool operator>=(T const& other) const { return !(*this < other); }
-        bool operator==(T const& other) const { return !(*this < other) && !(other.get() < this->underlying().get()); }
-        bool operator!=(T const& other) const { return !(*this == other); }
+        bool operator<(const T& other) const { return this->underlying().get() < other.get(); }
+        bool operator>(const T& other) const { return other.get() < this->underlying().get(); }
+        bool operator<=(const T& other) const { return !(other.get() < this->underlying().get()); }
+        bool operator>=(const T& other) const { return !(*this < other); }
+        bool operator==(const T& other) const { return !(*this < other) && !(other.get() < this->underlying().get()); }
+        bool operator!=(const T& other) const { return !(*this == other); }
     };
 
     template <typename T>
@@ -214,7 +229,7 @@ namespace cpp
     {};
 
     template <typename T>
-    struct Arithmetic : public Incrementable<T>,
+    struct Arithmetic : Incrementable<T>,
                         PreIncrementable<T>,
                         PostIncrementable<T>,
                         Addable<T>,
