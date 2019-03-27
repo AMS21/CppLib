@@ -9,6 +9,7 @@ project( "CppLib" CXX )
 
 # Options
 option(CPPLIB_BUILD_TESTS "Build the unit test suite" ON)
+option(CPPLIB_BUILD_DOCS  "Build the doxygen documentation" ON)
 
 # Use latest standard available but at least C++-14
 if    (DEFINED CMAKE_CXX20_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX20_EXTENSION_COMPILE_OPTION)
@@ -202,3 +203,24 @@ if (CPPLIB_BUILD_TESTS)
 		endif()
 	endif()
 endif() # CPPLIB_BUILD_TESTS
+
+find_package(Doxygen)
+
+if (DOXYGEN_FOUND AND CPPLIB_BUILD_DOCS)
+    # Configuration
+    set(DOXYGEN_OUTPUT_DIRECTORY "docs")
+    set(DOXYGEN_ALWAYS_SEC "YES")
+    set(DOXYGEN_INLINE_INHERITED_MEMB "YES")
+    set(DOXYGEN_EXTRACT_STATIC "YES")
+    set(DOXYGEN_WARN_NO_PARAMDOC "YES")
+    set(DOXYGEN_FILE_PATTERNS "*.hpp")
+    set(DOXYGEN_SOURCE_BROWSER "YES")
+    set(DOXYGEN_REFERENCES_LINK_SOURCE "NO")
+    set(DOXYGEN_HTML_TIMESTAMP "YES")
+    set(DOXYGEN_HTML_DYNAMIC_SECTIONS "YES")
+    set(DOXYGEN_MACRO_EXPANSION "YES")
+
+    doxygen_add_docs(documentation ${LIB_HEADERS})
+elseif(CPPLIB_BUILD_DOCS)
+    MESSAGE(WARNING "Trying to build documentation but the Doxygen executable wasn't found!")
+endif()

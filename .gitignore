@@ -628,6 +628,9 @@ spdlogConfigVersion.cmake
 .codelite/
 *.project
 *.workspace
+docs/
 
 # Targets
 cpplib_tests
+/Doxyfile.documentation
+/CMakeDoxygenDefaults.cmake
