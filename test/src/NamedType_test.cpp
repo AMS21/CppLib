@@ -132,6 +132,73 @@ TEST_CASE("Divisible")
     CHECK_EQ(s1.get(), 12);
 }
 
+TEST_CASE("Modulable")
+{
+    using ModulableType = cpp::NamedType<int, struct ModulableTag, cpp::Modulable>;
+    ModulableType s1(5);
+    ModulableType s2(2);
+    CHECK_EQ((s1 % s2).get(), 1);
+    s1 %= s2;
+    CHECK_EQ(s1.get(), 1);
+}
+
+TEST_CASE("BitWiseInvertable")
+{
+    using BitWiseInvertableType = cpp::NamedType<int, struct BitWiseInvertableTag, cpp::BitWiseInvertable>;
+    BitWiseInvertableType s1(13);
+    CHECK_EQ((~s1).get(), (~13));
+}
+
+TEST_CASE("BitWiseAndable")
+{
+    using BitWiseAndableType = cpp::NamedType<int, struct BitWiseAndableTag, cpp::BitWiseAndable>;
+    BitWiseAndableType s1(2);
+    BitWiseAndableType s2(64);
+    CHECK_EQ((s1 & s2).get(), (2 & 64));
+    s1 &= s2;
+    CHECK_EQ(s1.get(), (2 & 64));
+}
+
+TEST_CASE("BitWiseOrable")
+{
+    using BitWiseOrableType = cpp::NamedType<int, struct BitWiseOrableTag, cpp::BitWiseOrable>;
+    BitWiseOrableType s1(2);
+    BitWiseOrableType s2(64);
+    CHECK_EQ((s1 | s2).get(), (2 | 64));
+    s1 |= s2;
+    CHECK_EQ(s1.get(), (2 | 64));
+}
+
+TEST_CASE("BitWiseXorable")
+{
+    using BitWiseXorableType = cpp::NamedType<int, struct BitWiseXorableTag, cpp::BitWiseXorable>;
+    BitWiseXorableType s1(2);
+    BitWiseXorableType s2(64);
+    CHECK_EQ((s1 ^ s2).get(), (2 ^ 64));
+    s1 ^= s2;
+    CHECK_EQ(s1.get(), (2 ^ 64));
+}
+
+TEST_CASE("BitWiseLeftShiftable")
+{
+    using BitWiseLeftShiftableType = cpp::NamedType<int, struct BitWiseLeftShiftableTag, cpp::BitWiseLeftShiftable>;
+    BitWiseLeftShiftableType s1(2);
+    BitWiseLeftShiftableType s2(3);
+    CHECK_EQ((s1 << s2).get(), (2 << 3));
+    s1 <<= s2;
+    CHECK_EQ(s1.get(), (2 << 3));
+}
+
+TEST_CASE("BitWiseRightShiftable")
+{
+    using BitWiseRightShiftableType = cpp::NamedType<int, struct BitWiseRightShiftableTag, cpp::BitWiseRightShiftable>;
+    BitWiseRightShiftableType s1(2);
+    BitWiseRightShiftableType s2(3);
+    CHECK_EQ((s1 >> s2).get(), (2 >> 3));
+    s1 >>= s2;
+    CHECK_EQ(s1.get(), (2 >> 3));
+}
+
 TEST_CASE("Negatable")
 {
     using NegatableType = cpp::NamedType<int, struct NegatableTag, cpp::Negatable>;
@@ -387,4 +454,11 @@ TEST_CASE("Arithmetic")
 
     a /= b;
     CHECK_EQ(a.get(), 5);
+
+    a.get() = 5;
+    b.get() = 2;
+    CHECK_EQ((a % b).get(), 1);
+
+    a %= b;
+    CHECK_EQ(a.get(), 1);
 }

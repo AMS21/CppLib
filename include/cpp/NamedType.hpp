@@ -1,6 +1,6 @@
 #pragma once
 
-// Based on the excelent work from Jonathan Boccara on his NamedType library: https://github.com/joboccara/NamedType
+// Based on the excellent work from Jonathan Boccara on his NamedType library: https://github.com/joboccara/NamedType
 
 // List of changes:
 // Constructor is noexcept if constructing T is noexcept
@@ -8,6 +8,7 @@
 // NamedType is default constructible if T is default constructible
 // Added PostIncrementable
 // Added Divisible
+// Added Modulable
 
 #include "Warning.hpp"
 #include <iostream>    // std::ostream
@@ -121,6 +122,22 @@ namespace cpp
         T operator++(int) { return this->underlying().get()++; }
     };
 
+    template <typename T>
+    struct PreDecrementable : detail::crtp<T, PreDecrementable>
+    {
+        T& operator--()
+        {
+            --this->underlying().get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct PostDecrementable : detail::crtp<T, PostDecrementable>
+    {
+        T operator--(int) { return this->underlying().get()--; }
+    };
+
     CPP_GCC_SUPPRESS_WARNING_POP
 
     template <typename T>
@@ -163,6 +180,78 @@ namespace cpp
     };
 
     template <typename T>
+    struct Modulable : detail::crtp<T, Modulable>
+    {
+        T  operator%(const T& other) const { return T(this->underlying().get() % other.get()); }
+        T& operator%=(const T& other)
+        {
+            this->underlying().get() %= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct BitWiseInvertable : detail::crtp<T, BitWiseInvertable>
+    {
+        T operator~() const { return T(~this->underlying().get()); }
+    };
+
+    template <typename T>
+    struct BitWiseAndable : detail::crtp<T, BitWiseAndable>
+    {
+        T  operator&(const T& other) const { return T(this->underlying().get() & other.get()); }
+        T& operator&=(const T& other)
+        {
+            this->underlying().get() &= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct BitWiseOrable : detail::crtp<T, BitWiseOrable>
+    {
+        T  operator|(const T& other) const { return T(this->underlying().get() | other.get()); }
+        T& operator|=(const T& other)
+        {
+            this->underlying().get() |= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct BitWiseXorable : detail::crtp<T, BitWiseXorable>
+    {
+        T  operator^(const T& other) const { return T(this->underlying().get() ^ other.get()); }
+        T& operator^=(const T& other)
+        {
+            this->underlying().get() ^= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct BitWiseLeftShiftable : detail::crtp<T, BitWiseLeftShiftable>
+    {
+        T  operator<<(const T& other) const { return T(this->underlying().get() << other.get()); }
+        T& operator<<=(const T& other)
+        {
+            this->underlying().get() <<= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
+    struct BitWiseRightShiftable : detail::crtp<T, BitWiseRightShiftable>
+    {
+        T  operator>>(const T& other) const { return T(this->underlying().get() >> other.get()); }
+        T& operator>>=(const T& other)
+        {
+            this->underlying().get() >>= other.get();
+            return this->underlying();
+        }
+    };
+
+    template <typename T>
     struct Negatable : detail::crtp<T, Negatable>
     {
         T operator-() const { return T(-this->underlying().get()); }
@@ -182,11 +271,16 @@ namespace cpp
     template <typename T>
     struct Printable : detail::crtp<T, Printable>
     {
-        void print(std::ostream& os) const { os << this->underlying().get(); }
+        template <typename CharT>
+        void print(std::basic_ostream<CharT>& os) const
+        {
+            os << this->underlying().get();
+        }
     };
 
-    template <typename T, typename Parameter, template <typename> class... Skills>
-    std::ostream& operator<<(std::ostream& os, const NamedType<T, Parameter, Skills...>& object)
+    template <typename CharT, typename T, typename Parameter, template <typename> class... Skills>
+    std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>&                os,
+                                          const NamedType<T, Parameter, Skills...>& object)
     {
         object.print(os);
         return os;
@@ -238,10 +332,19 @@ namespace cpp
     struct Arithmetic : Incrementable<T>,
                         PreIncrementable<T>,
                         PostIncrementable<T>,
+                        PreDecrementable<T>,
+                        PostDecrementable<T>,
                         Addable<T>,
                         Subtractable<T>,
                         Multiplicable<T>,
                         Divisible<T>,
+                        Modulable<T>,
+                        BitWiseInvertable<T>,
+                        BitWiseAndable<T>,
+                        BitWiseOrable<T>,
+                        BitWiseXorable<T>,
+                        BitWiseLeftShiftable<T>,
+                        BitWiseRightShiftable<T>,
                         Negatable<T>,
                         Comparable<T>,
                         Printable<T>,
