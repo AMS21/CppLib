@@ -1,6 +1,21 @@
+/*!
+ * \file CurrentFunction.hpp
+ * \brief Exports an object like macro to get the name of the current function.
+**/
 #pragma once
 
 #include "Compiler.hpp"
+
+/*!
+ * \def CPP_CURRENT_FUNCTION
+ * \brief Expands to a C-String literal that represents the current function.
+ * \note Uses the 'prettiest' function macro that the compiler being used
+ *       provides.
+ * \warning Depending on the compiler used, this macro will expand to a
+ *          different C-String literal!
+ * \warning The result of the macro expansion can not be string concatenated
+ *          by the preprocessor with other C-String literals.
+**/
 
 #if CPP_COMPILER_IS(CPP_COMPILER_MSVC)
 #    define CPP_CURRENT_FUNCTION __FUNCSIG__
