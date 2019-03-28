@@ -93,16 +93,6 @@ namespace cpp
 
     //
 
-    template <typename T>
-    struct Incrementable : detail::crtp<T, Incrementable>
-    {
-        T& operator+=(const T& other)
-        {
-            this->underlying().get() += other.get();
-            return this->underlying();
-        }
-    };
-
     CPP_GCC_SUPPRESS_WARNING_PUSH
     CPP_GCC_SUPPRESS_WARNING("-Weffc++")
 
@@ -143,7 +133,12 @@ namespace cpp
     template <typename T>
     struct Addable : detail::crtp<T, Addable>
     {
-        T operator+(const T& other) const { return T(this->underlying().get() + other.get()); }
+        T  operator+(const T& other) const { return T(this->underlying().get() + other.get()); }
+        T& operator+=(const T& other)
+        {
+            this->underlying().get() += other.get();
+            return this->underlying();
+        }
     };
 
     template <typename T>
@@ -329,8 +324,7 @@ namespace cpp
     {};
 
     template <typename T>
-    struct Arithmetic : Incrementable<T>,
-                        PreIncrementable<T>,
+    struct Arithmetic : PreIncrementable<T>,
                         PostIncrementable<T>,
                         PreDecrementable<T>,
                         PostDecrementable<T>,

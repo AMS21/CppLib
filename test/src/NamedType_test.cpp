@@ -100,6 +100,8 @@ TEST_CASE("Addable")
     AddableType s1(12);
     AddableType s2(10);
     CHECK_EQ((s1 + s2).get(), 22);
+    s1 += s2;
+    CHECK_EQ(s1.get(), 22);
 }
 
 TEST_CASE("Subtractable")
