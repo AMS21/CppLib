@@ -56,4 +56,8 @@
 #    define CPP_GCC_SUPPRESS_WARNING_POP                /* Nothing */
 #endif
 
+#if !defined(CPP_COMPILER_WARNING)
+#    define CPP_COMPILER_WARNING(msg) /* Nothing */
+#endif
+
 #define CPP_UNUSED_PARAMETER(parameter) ((void)(parameter))
