@@ -632,5 +632,6 @@ docs/
 
 # Targets
 cpplib_tests
-/Doxyfile.documentation
 /CMakeDoxygenDefaults.cmake
+/Doxyfile.CppLib_documentation
+/Doxyfile.documentation
