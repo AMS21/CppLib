@@ -36,7 +36,8 @@ namespace cpp
         bool first = true;
     } // namespace
 
-    std::ostream& operator<<(std::ostream& stream, const ConsoleColor color)
+    template <typename CharT>
+    std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& stream, const ConsoleColor color)
     {
         if (first)
         {
@@ -77,7 +78,8 @@ namespace cpp
         White       = 97,
     };
 
-    std::ostream& operator<<(std::ostream& stream, const ConsoleColor color)
+    template <typename CharT>
+    std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& stream, const ConsoleColor color)
     {
         stream << "\e[" + std::to_string(static_cast<int>(color)) + "m";
         return stream;
@@ -110,7 +112,11 @@ namespace cpp
         White,
     };
 
-    std::ostream& operator<<(std::ostream& stream, const ConsoleColor color) { return stream; }
+    template <typename CharT>
+    std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& stream, const ConsoleColor color)
+    {
+        return stream;
+    }
 
 } // namespace cpp
 #endif

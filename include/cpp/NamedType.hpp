@@ -1,3 +1,8 @@
+/*!
+ * \file NamedType.hpp
+ * \brief Strongly typed
+ *
+**/
 #pragma once
 
 // Based on the excellent work from Jonathan Boccara on his NamedType library: https://github.com/joboccara/NamedType
@@ -11,7 +16,7 @@
 // Added Modulable
 
 #include "Warning.hpp"
-#include <iostream>    // std::ostream
+#include <iostream>    // std::basic_ostream
 #include <memory>      // std::addressof
 #include <type_traits> // std::remove_reference_t, std::enable_if, std::remove_reference_t
 #include <utility>     // std::move, std::forward
