@@ -24,6 +24,7 @@
 #    include "TargetConditionals.h"
 #    if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
 #        define CPP_OS CPP_OS_IOS
+#        define CPP_OS_NAME "IPhone"
 #    elif TARGET_OS_MAC
 #        define CPP_OS CPP_OS_MACOS
 #        define CPP_OS_NAME "MacOS"
