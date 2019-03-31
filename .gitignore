@@ -635,3 +635,4 @@ cpplib_tests
 /CMakeDoxygenDefaults.cmake
 /Doxyfile.CppLib_documentation
 /Doxyfile.documentation
+/CppLib
