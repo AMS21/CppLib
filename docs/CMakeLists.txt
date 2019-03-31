@@ -18,7 +18,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_HTML_DYNAMIC_SECTIONS "YES")
     set(DOXYGEN_MACRO_EXPANSION "YES")
 
-    doxygen_add_docs(${PROJECT_NAME} ${LIB_HEADERS})
+    doxygen_add_docs("CppLib" ${LIB_HEADERS})
 elseif()
     MESSAGE(WARNING "Trying to build documentation but the Doxygen executable wasn't found!")
 endif()
