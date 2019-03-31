@@ -1,6 +1,6 @@
 /*!
  * \file NamedType.hpp
- * \brief Strongly typed
+ * \brief Exports the strongly typed type NamedType.
  *
 **/
 #pragma once
@@ -49,7 +49,7 @@ namespace cpp
     class CPP_EBCO NamedType : public Skills<NamedType<T, Parameter, Skills...>>...
     {
     public:
-        using type = T;
+        using type = T; /// Underlying type of the NamedType
 
         // constructor
         template <typename T_ = T, typename = std::enable_if<std::is_default_constructible<T>::value, void>>
