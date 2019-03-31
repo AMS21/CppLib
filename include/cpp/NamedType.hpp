@@ -1,6 +1,6 @@
 /*!
  * \file NamedType.hpp
- * \brief Exports the strongly typed type NamedType.
+ * \brief Exports the strongly typed class NamedType.
  *
 **/
 #pragma once
