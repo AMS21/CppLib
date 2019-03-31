@@ -7,7 +7,7 @@
 #    define CPP_BREAK_INTO_DEBUGGER() __asm__("int $3\n" : :)
 #elif CPP_COMPILER_IS(CPP_COMPILER_MSVC)
 #    define CPP_BREAK_INTO_DEBUGGER() __debugbreak()
-#elif defined(__MINGW32__)
+#elif CPP_COMPILER_IS(CPP_COMPILER_MINGW)
 extern "C" __declspec(dllimport) void __stdcall DebugBreak();
 #    define CPP_BREAK_INTO_DEBUGGER() ::DebugBreak()
 #else
