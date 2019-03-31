@@ -1,14 +1,15 @@
 #pragma once
 
-////////////////////////////////////////////////////////////
-/* Compiler Detection */
-////////////////////////////////////////////////////////////
+#include "Versioning.hpp"
+
+// This implementation is mostly based upon this article https://sourceforge.net/p/predef/wiki/Compilers/
 
 // clang-format off
 #define CPP_COMPILER_CLANG   (0x0000) /* meaningless number */
 #define CPP_COMPILER_ICC     (0x0001) /* meaningless number */
 #define CPP_COMPILER_MSVC    (0x0002) /* meaningless number */
 #define CPP_COMPILER_GCC     (0x0003) /* meaningless number */
+#define CPP_COMPILER_MINGW   (0x0004) /* meaningless number */
 #define CPP_COMPILER_UNKNOWN (0xFFFF) /* meaningless number */
 // clang-format on
 
@@ -36,6 +37,17 @@
 #    define CPP_COMPILER_MINOR __GNUC_MINOR__
 #    define CPP_COMPILER_PATCH __GNUC_PATCHLEVEL__
 #    define CPP_COMPILER_NAME "GCC"
+#elif defined(__MINGW32__)
+#    include "stdlib.h" // Needed for version information
+#    define CPP_COMPILER CPP_COMPILER_MINGW
+#    define CPP_COMPILER_MAJOR __MINGW32_MAJOR_VERSION
+#    define CPP_COMPILER_MINOR __MINGW32_MINOR_VERSION
+#    define CPP_COMPILER_PATCH 0 // no patch version defined for MingW
+#    if defined(__MINGW64__) || defined(__MINGW64_VERSION_MAJOR) || defined(__MINGW64_VERSION_MINOR)
+#        define CPP_COMPILER_NAME "MinGW64"
+#    else
+#        define CPP_COMPILER_NAME "MinGW32"
+#    endif
 #else
 #    define CPP_COMPILER CPP_COMPILER_UNKNOWN
 #    define CPP_COMPILER_MAJOR (0) /* 0 for unknown compiler */
@@ -45,17 +57,14 @@
 #    warning "Compiler could not be detected"
 #endif
 
-#define CPP_COMPILER_VERSION_CREATE(major, minor, patch)                                                               \
-    (((major)*16777216) + ((minor)*65536) + (patch)) /* multipliers to 'push' the numbers leftward */
-
-#define CPP_COMPILER_VERSION CPP_COMPILER_VERSION_CREATE(CPP_COMPILER_MAJOR, CPP_COMPILER_MINOR, CPP_COMPILER_PATCH)
+#define CPP_COMPILER_VERSION CPP_VERSION_CREATE(CPP_COMPILER_MAJOR, CPP_COMPILER_MINOR, CPP_COMPILER_PATCH)
 
 #define CPP_COMPILER_IS(compiler) (CPP_COMPILER == (compiler))
 
 #define CPP_COMPILER_IS_NOT(compiler) (CPP_COMPILER != (compiler))
 
 #define CPP_COMPILER_VERSION_IS_ATLEAST(major, minor, patch)                                                           \
-    (CPP_COMPILER_VERSION_CREATE(major, minor, patch) <= CPP_COMPILER_VERSION)
+    (CPP_VERSION_CREATE(major, minor, patch) <= CPP_COMPILER_VERSION)
 
 #define CPP_COMPILER_VERSION_IS_BELOW(major, minor, patch)                                                             \
-    (CPP_COMPILER_VERSION_CREATE(major, minor, patch) > CPP_COMPILER_VERSION)
+    (CPP_VERSION_CREATE(major, minor, patch) > CPP_COMPILER_VERSION)
