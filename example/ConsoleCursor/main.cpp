@@ -1,6 +1,12 @@
 #include "cpp/Console.hpp"
+#include "cpp/Warning.hpp"
 #include <chrono>
+
+CPP_MSVC_SUPPRESS_WARNING_PUSH
+CPP_MSVC_SUPPRESS_WARNING(
+        5039) // 'x': pointer or reference to potentially throwing function passed to extern C function under -EHc. Undefined behavior may occur if this function throws an exception.
 #include <thread>
+CPP_MSVC_SUPPRESS_WARNING_POP
 
 using seconds = std::chrono::duration<int, std::ratio<1>>;
 
