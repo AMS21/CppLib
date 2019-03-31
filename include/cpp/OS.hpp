@@ -51,7 +51,7 @@
 #        define CPP_OS_NAME "Unknown"
 #        warning "Unknown Unix based operating system"
 #    endif
-#    define CPP_OS_UNIX_BASED
+#    define CPP_OS_UNIX_BASED 1
 #elif defined(__sun) && defined(__SVR4)
 #    define CPP_OS CPP_OS_SOLARIS
 #    define CPP_OS_NAME "Solaris"
@@ -59,6 +59,10 @@
 #    define CPP_OS CPP_OS_UNKNOWN
 #    define CPP_OS_NAME "Unknown"
 #    warning "Operating system could not be detected"
+#endif
+
+#if !defined(CPP_OS_UNIX_BASED)
+#    define CPP_OS_UNIX_BASED 0
 #endif
 
 #define CPP_OS_IS(os) (CPP_OS == (os))
