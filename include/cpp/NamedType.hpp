@@ -30,6 +30,7 @@
 
 namespace cpp
 {
+    /// \cond detail
     namespace detail
     {
         template <typename T, template <typename> class crtpType>
@@ -42,6 +43,7 @@ namespace cpp
         template <typename T>
         using IsNotReference = typename std::enable_if<!std::is_reference<T>::value, void>::type;
     } // namespace detail
+    /// \endcond
 
     template <typename T, typename Parameter, template <typename> class... Skills>
     class CPP_EBCO NamedType : public Skills<NamedType<T, Parameter, Skills...>>...
