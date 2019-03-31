@@ -22,6 +22,6 @@ extern "C" __declspec(dllimport) void __stdcall DebugBreak();
 /*!
  * \def CPP_BREAK_INTO_DEBUGGER
  * \brief Function like macro for breaking into the debugger
- * \note Currently only supported on MacOs, MSVC and mingw and
- *       all other platforms/compilers it does nothing
+ * \note Currently only supported on MacOs, MSVC and MinGW on
+ *       all other platforms/compilers it simply does nothing
 **/
