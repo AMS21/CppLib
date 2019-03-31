@@ -31,7 +31,7 @@ For more information, please refer to <http://unlicense.org>
 #include "OS.hpp"
 #include "Warning.hpp"
 
-#if CPP_OS_IS(CPP_OS_LINUX) || CPP_OS_IS(CPP_OS_MACOS)
+#if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
 #    include <unistd.h>
 
 #elif CPP_OS_IS(CPP_OS_WINDOWS)
@@ -138,23 +138,34 @@ namespace cpp
         gray    = 107
     };
 
+    /*
+     * Use cpp::setControlMode() to set rang control mode
+     *  Off  : Toggle off style/color calls
+     *  Auto : Auto detect terminal and colorize if needed (Default)
+     *  Force: Force ANSI color output to non terminal streams
+    **/
     enum class control
-    {              // Behaviour of function calls
-        Off   = 0, // toggle off style/color calls
-        Auto  = 1, // (Default) auto detect terminal and colorize if needed
-        Force = 2  // force ANSI color output to non terminal streams
+    {
+        Off   = 0, /// Toggle off style/color calls
+        Auto  = 1, /// Auto detect terminal and colorize if needed (Default)
+        Force = 2  /// Force ANSI color output to non terminal streams
     };
-    // Use cpp::setControlMode to set control mode
 
+    /*!
+     * Use cpp::setWinTermMode() to explicitly set terminal API for Windows
+     * Calling cpp::setWinTermMode() have no effect on other OS
+     *  Auto  : Automatically detects whether Ansi or Native API (Default)
+     *  Ansi  : Force use Ansi API
+     *  Native: Force use Native API
+    **/
     enum class winTerm
-    {               // Windows Terminal Mode
-        Auto   = 0, // (Default) automatically detects whether ANSI or Native API
-        Ansi   = 1, // Force use ANSI API
-        Native = 2  // Force use Native API
+    {
+        Auto   = 0, /// Automatically detects whether Ansi or Native API (Default)
+        Ansi   = 1, /// Force use Ansi API
+        Native = 2  /// Force use Native API
     };
-    // Use cpp::setWinTermMode to explicitly set terminal API for Windows
-    // Calling cpp::setWinTermMode have no effect on other OS
 
+    /// \cond detail
     namespace detail
     {
         inline std::atomic<control>& controlMode() noexcept
@@ -169,9 +180,35 @@ namespace cpp
             return termMode;
         }
 
-        inline bool supportsColor() noexcept
+        template <typename CharT, typename Traits>
+        inline FILE* stdio_file(const std::basic_streambuf<CharT, Traits>* sbuf) noexcept
         {
-#if CPP_OS_IS(CPP_OS_LINUX) || CPP_OS_IS(CPP_OS_MACOS)
+            return nullptr;
+        }
+
+        inline FILE* stdio_file(const std::wstreambuf* sbuf) noexcept
+        {
+            if (sbuf == std::wcout.rdbuf()) { return stdout; }
+            else if (sbuf == std::wcerr.rdbuf() || sbuf == std::wclog.rdbuf())
+            {
+                return stderr;
+            }
+            return nullptr;
+        }
+
+        inline FILE* stdio_file(const std::streambuf* sbuf) noexcept
+        {
+            if (sbuf == std::cout.rdbuf()) { return stdout; }
+            else if (sbuf == std::cerr.rdbuf() || sbuf == std::clog.rdbuf())
+            {
+                return stderr;
+            }
+            return nullptr;
+        }
+
+        inline bool isSupportedTerm() noexcept
+        {
+#if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
 
             static const bool result = [] {
                 const char* Terms[] = {"ansi",  "color", "console", "cygwin", "gnome",  "konsole", "kterm",
@@ -194,13 +231,10 @@ namespace cpp
 
         inline bool isMsysPty(int fd) noexcept
         {
-            // Dynamic load for binary compatibility with old Windows
-            CPP_MSVC_SUPPRESS_WARNING_PUSH
-            CPP_MSVC_SUPPRESS_WARNING(
-                    4191) // 'reinterpret_cast': unsafe conversion from 'FARPROC' to 'BOOL (__stdcall *)(HANDLE,FILE_INFO_BY_HANDLE_CLASS,LPVOID,DWORD)'
-            const auto ptrGetFileInformationByHandleEx = reinterpret_cast<decltype(&GetFileInformationByHandleEx)>(
-                    GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetFileInformationByHandleEx"));
-            CPP_MSVC_SUPPRESS_WARNING_POP
+            // Dynamic load for binary compability with old Windows
+            const auto ptrGetFileInformationByHandleEx =
+                    reinterpret_cast<decltype(&GetFileInformationByHandleEx)>(reinterpret_cast<void*>(
+                            GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetFileInformationByHandleEx")));
             if (!ptrGetFileInformationByHandleEx) { return false; }
 
             HANDLE h = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
@@ -224,6 +258,7 @@ namespace cpp
             // {"cygwin-","msys-"}XXXXXXXXXXXXXXX-ptyX-XX
             if (!ptrGetFileInformationByHandleEx(h, FileNameInfo, pNameInfo.get(), sizeof(MyFileNameInfo)))
             { return false; }
+
             std::wstring name(pNameInfo->FileName, pNameInfo->FileNameLength / sizeof(WCHAR));
             if ((name.find(L"msys-") == std::wstring::npos && name.find(L"cygwin-") == std::wstring::npos) ||
                 name.find(L"-pty") == std::wstring::npos)
@@ -233,33 +268,28 @@ namespace cpp
 
 #endif
 
-        template <typename CharT>
-        inline bool isTerminal(const std::basic_streambuf<CharT>* osbuf) noexcept
+        template <typename CharT, typename Traits>
+        inline bool isTTY(std::basic_streambuf<CharT, Traits>* osbuf) noexcept
         {
-            return false;
-        }
-
-        template <>
-        inline bool isTerminal<char>(const std::streambuf* osbuf) noexcept
-        {
-#if CPP_OS_IS(CPP_OS_LINUX) || CPP_OS_IS(CPP_OS_MACOS)
-            if (osbuf == std::cout.rdbuf())
+            const FILE* ioFile = stdio_file(osbuf);
+#if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
+            if (ioFile == stdout)
             {
-                static const bool cout_term = isatty(fileno(std::stdout)) != 0;
+                static const bool cout_term = isatty(fileno(stdout)) != 0;
                 return cout_term;
             }
-            else if (osbuf == std::cerr.rdbuf() || osbuf == std::clog.rdbuf())
+            else if (ioFile == stderr)
             {
-                static const bool cerr_term = isatty(fileno(std::stderr)) != 0;
+                static const bool cerr_term = isatty(fileno(stderr)) != 0;
                 return cerr_term;
             }
 #elif CPP_OS_IS(CPP_OS_WINDOWS)
-            if (osbuf == std::cout.rdbuf())
+            if (ioFile == stdout)
             {
                 static const bool cout_term = (_isatty(_fileno(stdout)) || isMsysPty(_fileno(stdout)));
                 return cout_term;
             }
-            else if (osbuf == std::cerr.rdbuf() || osbuf == std::clog.rdbuf())
+            else if (ioFile == stderr)
             {
                 static const bool cerr_term = (_isatty(_fileno(stderr)) || isMsysPty(_fileno(stderr)));
                 return cerr_term;
@@ -268,52 +298,50 @@ namespace cpp
             return false;
         }
 
-        template <>
-        inline bool isTerminal<wchar_t>(const std::wstreambuf* osbuf) noexcept
+        template <typename CharT, typename Traits>
+        class StreamScopeGuard
         {
-#if CPP_OS_IS(CPP_OS_LINUX) || CPP_OS_IS(CPP_OS_MACOS)
-            if (osbuf == std::wcout.rdbuf())
-            {
-                static const bool wcout_term = isatty(fileno(std::wstdout)) != 0;
-                return wcout_term;
-            }
-            else if (osbuf == std::wcerr.rdbuf() || osbuf == std::wclog.rdbuf())
-            {
-                static const bool wcerr_term = isatty(fileno(std::wstderr)) != 0;
-                return wcerr_term;
-            }
-#elif CPP_OS_IS(CPP_OS_WINDOWS)
-            if (osbuf == std::wcout.rdbuf())
-            {
-                static const bool wcout_term = (_isatty(_fileno(stdout)) || isMsysPty(_fileno(stdout)));
-                return wcout_term;
-            }
-            else if (osbuf == std::wcerr.rdbuf() || osbuf == std::wclog.rdbuf())
-            {
-                static const bool wcerr_term = (_isatty(_fileno(stderr)) || isMsysPty(_fileno(stderr)));
-                return wcerr_term;
-            }
-#endif
-            return false;
-        }
+            std::basic_ostream<CharT, Traits>& os;
+            const std::ios_base::fmtflags      flags;
+            const std::streamsize              width;
+            const std::streamsize              precision;
 
-        template <typename CharT, typename T>
+        public:
+            StreamScopeGuard(std::basic_ostream<CharT, Traits>& _os)
+                : os(_os)
+                , flags(os.flags())
+                , width(os.width())
+                , precision(os.precision())
+            {
+                os.width(0);
+                os.precision(0);
+            }
+
+            ~StreamScopeGuard()
+            {
+                os.flags(flags);
+                os.width(width);
+                os.precision(precision);
+            }
+        };
+
+        template <typename T>
         using enableConsole =
                 typename std::enable_if<std::is_same<T, cpp::style>::value || std::is_same<T, cpp::fg>::value ||
                                                 std::is_same<T, cpp::bg>::value || std::is_same<T, cpp::fgB>::value ||
                                                 std::is_same<T, cpp::bgB>::value,
-                                        std::basic_ostream<CharT>&>::type;
+                                        T>::type;
 
 #if CPP_OS_IS(CPP_OS_WINDOWS)
 
         struct SGR
         {                      // Select Graphic Rendition parameters for Windows console
-            BYTE    fgColor;   /// foreground color (0-15) lower 3 rgb bits + intense bit
-            BYTE    bgColor;   /// background color (0-15) lower 3 rgb bits + intense bit
-            BYTE    bold;      /// emulated as FOREGROUND_INTENSITY bit
-            BYTE    underline; /// emulated as BACKGROUND_INTENSITY bit
-            BOOLEAN inverse;   /// swap foreground/bold & background/underline
-            BOOLEAN conceal;   /// set foreground/bold to background/underline
+            BYTE    fgColor;   // foreground color (0-15) lower 3 rgb bits + intense bit
+            BYTE    bgColor;   // background color (0-15) lower 3 rgb bits + intense bit
+            BYTE    bold;      // emulated as FOREGROUND_INTENSITY bit
+            BYTE    underline; // emulated as BACKGROUND_INTENSITY bit
+            BOOLEAN inverse;   // swap foreground/bold & background/underline
+            BOOLEAN conceal;   // set foreground/bold to background/underline
         };
 
         enum class AttrColor : BYTE
@@ -328,48 +356,25 @@ namespace cpp
             gray    = 7
         };
 
-        template <typename CharT>
-        inline HANDLE getConsoleHandle(const std::basic_streambuf<CharT>* osbuf) noexcept
+        template <typename CharT, typename Traits>
+        inline HANDLE getConsoleHandle(const std::basic_streambuf<CharT, Traits>* osbuf) noexcept
         {
-            return INVALID_HANDLE_VALUE;
-        }
-
-        template <>
-        inline HANDLE getConsoleHandle<char>(const std::streambuf* osbuf) noexcept
-        {
-            if (osbuf == std::cout.rdbuf())
+            const FILE* ioFile = stdio_file(osbuf);
+            if (ioFile == stdout)
             {
                 static const HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
                 return hStdout;
             }
-            else if (osbuf == std::cerr.rdbuf() || osbuf == std::clog.rdbuf())
+            else if (ioFile == stderr)
             {
                 static const HANDLE hStderr = GetStdHandle(STD_ERROR_HANDLE);
                 return hStderr;
             }
-
             return INVALID_HANDLE_VALUE;
         }
 
-        template <>
-        inline HANDLE getConsoleHandle<wchar_t>(const std::wstreambuf* osbuf) noexcept
-        {
-            if (osbuf == std::wcout.rdbuf())
-            {
-                static const HANDLE hStdwout = GetStdHandle(STD_OUTPUT_HANDLE);
-                return hStdwout;
-            }
-            else if (osbuf == std::wcerr.rdbuf() || osbuf == std::wclog.rdbuf())
-            {
-                static const HANDLE hStdwerr = GetStdHandle(STD_ERROR_HANDLE);
-                return hStdwerr;
-            }
-
-            return INVALID_HANDLE_VALUE;
-        }
-
-        template <typename CharT>
-        inline bool setWinTermAnsiColors(const std::basic_streambuf<CharT>* osbuf) noexcept
+        template <typename CharT, typename Traits>
+        inline bool setWinTermAnsiColors(const std::basic_streambuf<CharT, Traits>* osbuf) noexcept
         {
             HANDLE h = getConsoleHandle(osbuf);
             if (h == INVALID_HANDLE_VALUE) { return false; }
@@ -380,43 +385,20 @@ namespace cpp
             return true;
         }
 
-        template <typename CharT>
-        inline bool supportsAnsi(const std::basic_streambuf<CharT>* osbuf) noexcept
+        template <typename CharT, typename Traits>
+        inline bool supportsAnsi(const std::basic_streambuf<CharT, Traits>* osbuf) noexcept
         {
-            return false;
-        }
-
-        template <>
-        inline bool supportsAnsi<char>(const std::streambuf* osbuf) noexcept
-        {
-            if (osbuf == std::cout.rdbuf())
+            const FILE* ioFile = stdio_file(osbuf);
+            if (ioFile == stdout)
             {
                 static const bool cout_ansi = (isMsysPty(_fileno(stdout)) || setWinTermAnsiColors(osbuf));
                 return cout_ansi;
             }
-            else if (osbuf == std::cerr.rdbuf() || osbuf == std::clog.rdbuf())
+            else if (ioFile == stderr)
             {
                 static const bool cerr_ansi = (isMsysPty(_fileno(stderr)) || setWinTermAnsiColors(osbuf));
                 return cerr_ansi;
             }
-
-            return false;
-        }
-
-        template <>
-        inline bool supportsAnsi<wchar_t>(const std::wstreambuf* osbuf) noexcept
-        {
-            if (osbuf == std::wcout.rdbuf())
-            {
-                static const bool wcout_ansi = (isMsysPty(_fileno(stdout)) || setWinTermAnsiColors(osbuf));
-                return wcout_ansi;
-            }
-            else if (osbuf == std::wcerr.rdbuf() || osbuf == std::wclog.rdbuf())
-            {
-                static const bool wcerr_ansi = (isMsysPty(_fileno(stderr)) || setWinTermAnsiColors(osbuf));
-                return wcerr_ansi;
-            }
-
             return false;
         }
 
@@ -433,7 +415,6 @@ namespace cpp
                 sgr.bgColor = static_cast<BYTE>((attrib & 0xF0) >> 4);
                 return sgr;
             }();
-
             return defaultSgr;
         }
 
@@ -483,11 +464,10 @@ namespace cpp
                 case cpp::style::reversed: state.inverse = TRUE; break;
                 case cpp::style::conceal: state.conceal = TRUE; break;
 
-                // Ignored styles
+                case cpp::style::crossed:
                 case cpp::style::dim:
                 case cpp::style::italic:
                 case cpp::style::rblink:
-                case cpp::style::crossed:
                 default: break;
             }
         }
@@ -527,27 +507,28 @@ namespace cpp
             return attrib;
         }
 
-        template <typename CharT, typename T>
-        inline void setWinColorAnsi(std::basic_ostream<CharT>& os, const T value)
+        template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
+        inline void setWinColorAnsi(std::basic_ostream<CharT, Traits>& os, T const value)
         {
+            StreamScopeGuard<CharT, Traits> guard(os);
+            os.flags(std::ios::dec | std::ios::left);
             os << "\033[" << static_cast<int>(value) << "m";
         }
 
-        template <typename CharT, typename T>
-        inline void setWinColorNative(std::basic_ostream<CharT>& os, const T value)
+        template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
+        inline void setWinColorNative(std::basic_ostream<CharT, Traits>& os, T const value)
         {
             const HANDLE h = getConsoleHandle(os.rdbuf());
             if (h != INVALID_HANDLE_VALUE)
             {
                 setWinSGR(value, current_state());
-                // Out all buffered text to console with previous settings:
-                os.flush();
+                os.flush(); // necessary
                 SetConsoleTextAttribute(h, SGR2Attr(current_state()));
             }
         }
 
-        template <typename CharT, typename T>
-        inline enableConsole<CharT, T> setColor(std::basic_ostream<CharT>& os, const T value)
+        template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
+        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& os, T const value)
         {
             if (winTermMode() == winTerm::Auto)
             {
@@ -568,30 +549,160 @@ namespace cpp
             return os;
         }
 #else
-        template <typename T>
-        inline enableConsole<T> setColor(std::ostream& os, const T value)
+        template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
+        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& os, T const value)
         {
+            StreamScopeGuard<CharT, Traits> guard(os);
+            os.flags(std::ios::dec | std::ios::left);
             return os << "\033[" << static_cast<int>(value) << "m";
         }
 #endif
-    } // namespace detail
 
-    template <typename CharT, typename T>
-    inline detail::enableConsole<CharT, T> operator<<(std::basic_ostream<CharT>& os, const T value)
-    {
-        const control option = detail::controlMode();
-        switch (option)
+#if CPP_OS_IS(CPP_OS_WINDOWS)
+        template <typename CharT, typename Traits>
+        inline void showCursorNative(const std::basic_ostream<CharT, Traits>& os, const bool flg) noexcept
         {
-            case control::Auto:
-                return detail::supportsColor() && detail::isTerminal(os.rdbuf()) ? detail::setColor(os, value) : os;
-            case control::Force: return detail::setColor(os, value);
-            case control::Off:
-            default: return os;
-        }
-    }
+            const HANDLE h = getConsoleHandle(os.rdbuf());
+            if (h == INVALID_HANDLE_VALUE) return;
 
-    inline void setWinTermMode(const winTerm value) noexcept { detail::winTermMode() = value; }
+            CONSOLE_CURSOR_INFO info;
+            if (!GetConsoleCursorInfo(h, &info)) return;
+
+            info.bVisible = flg ? TRUE : FALSE;
+            SetConsoleCursorInfo(h, &info);
+        }
+#endif
+
+        // CRTP base class
+        template <typename T>
+        class Cursor
+        {
+            Cursor() = default;
+            friend T;
+        };
+    } // namespace detail
+    /// \endcond
+
+    inline void setWinTermMode(const cpp::winTerm value) noexcept { detail::winTermMode() = value; }
 
     inline void setControlMode(const control value) noexcept { detail::controlMode() = value; }
 
+    namespace cursor
+    {
+        struct setVisible final : public detail::Cursor<setVisible>
+        {
+            const bool visible;
+            setVisible(const bool v = true)
+                : visible(v)
+            {}
+
+            template <typename CharT, typename Traits>
+            void execAnsi(std::basic_ostream<CharT, Traits>& os) const
+            {
+                os << (visible ? "\033[?25h" : "\033[?25l");
+            }
+#if CPP_OS_IS(CPP_OS_WINDOWS)
+            template <typename CharT, typename Traits>
+            void execNative(const std::basic_ostream<CharT, Traits>& os) const noexcept
+            {
+                detail::showCursorNative(os, visible);
+            }
+#endif
+        };
+
+        struct setPos final : public detail::Cursor<setPos>
+        {
+            const short x;
+            const short y;
+
+            setPos(const short a = 0, const short b = 0)
+                : x(a)
+                , y(b)
+            {}
+
+            template <typename CharT, typename Traits>
+            void execAnsi(std::basic_ostream<CharT, Traits>& os) const
+            {
+                os << "\033[" << x << ';' << y << 'H';
+            }
+#if CPP_OS_IS(CPP_OS_WINDOWS)
+            template <typename CharT, typename Traits>
+            void execNative(const std::basic_ostream<CharT, Traits>& os) const noexcept
+            {
+                const auto consoleHandle = cpp::detail::getConsoleHandle(os.rdbuf());
+                if (consoleHandle != INVALID_HANDLE_VALUE) { SetConsoleCursorPosition(consoleHandle, {y, x}); }
+            }
+#endif
+        };
+    } // namespace cursor
+
 } // namespace cpp
+
+// Applies cursor operation to given ostream
+template <typename CharT, typename Traits, typename T>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                              const cpp::detail::Cursor<T>&&     base)
+{
+    const auto useCursor = [&]() -> std::basic_ostream<CharT, Traits>& {
+        const auto&& drv = static_cast<T const&&>(base);
+#if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
+        cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+        os.flags(std::ios::dec | std::ios::left);
+        drv.execAnsi(os);
+        os.flush();
+#elif CPP_OS_IS(CPP_OS_WINDOWS)
+        if (cpp::detail::winTermMode() == cpp::winTerm::Auto)
+        {
+            if (cpp::detail::supportsAnsi(os.rdbuf()))
+            {
+                cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+                os.flags(std::ios::dec | std::ios::left);
+                drv.execAnsi(os);
+                os.flush();
+            }
+            else
+            {
+                drv.execNative(os);
+            }
+        }
+        else if (cpp::detail::winTermMode() == cpp::winTerm::Ansi)
+        {
+            cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+            os.flags(std::ios::dec | std::ios::left);
+            drv.execAnsi(os);
+            os.flush();
+        }
+        else
+        {
+            drv.execNative(os);
+        }
+#endif
+        return os;
+    };
+
+    const cpp::control option = cpp::detail::controlMode();
+    switch (option)
+    {
+        case cpp::control::Auto:
+            return cpp::detail::isSupportedTerm() && cpp::detail::isTTY(os.rdbuf()) ? useCursor() : os;
+        case cpp::control::Force: return useCursor();
+        default: return os;
+    }
+}
+
+// Applies color operation to given ostream
+template <typename CharT, typename Traits, typename T, typename = cpp::detail::enableConsole<T>>
+inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const T& value)
+{
+    const cpp::control option = cpp::detail::controlMode();
+    switch (option)
+    {
+        case cpp::control::Auto:
+            return cpp::detail::isSupportedTerm() && cpp::detail::isTTY(os.rdbuf()) ? cpp::detail::setColor(os, value) :
+                                                                                      os;
+        case cpp::control::Force: return cpp::detail::setColor(os, value);
+
+        case cpp::control::Off:
+        default: return os;
+    }
+}
