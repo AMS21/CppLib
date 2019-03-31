@@ -686,6 +686,8 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
         case cpp::control::Auto:
             return cpp::detail::isSupportedTerm() && cpp::detail::isTTY(os.rdbuf()) ? useCursor() : os;
         case cpp::control::Force: return useCursor();
+
+        case cpp::control::Off:
         default: return os;
     }
 }
