@@ -23,9 +23,13 @@ file(STRINGS "include/cpp/CppLib.hpp"
     CPPLIB_VERSION_PATCH_READ
 	REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_PATCH+[ \t\r\n]+[0-9]+.*$")
 
-set("CPPLIB_VERSION_MAJOR" ${CPPLIB_VERSION_MAJOR_READ} CACHE STRING "Major version number for the CppLib")
-set("CPPLIB_VERSION_MINOR" ${CPPLIB_VERSION_MINOR_READ} CACHE STRING "Minor version number for the CppLib")
-set("CPPLIB_VERSION_PATCH" ${CPPLIB_VERSION_PATCH_READ} CACHE STRING "Patch version number for the CppLib")
+string(REGEX REPLACE "[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MAJOR+[ \t\r\n]+([0-9])+.*" "\\1" CPPLIB_VERSION_MAJOR ${CPPLIB_VERSION_MAJOR_READ})
+string(REGEX REPLACE "[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MINOR+[ \t\r\n]+([0-9])+.*" "\\1" CPPLIB_VERSION_MINOR ${CPPLIB_VERSION_MINOR_READ})
+string(REGEX REPLACE "[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_PATCH+[ \t\r\n]+([0-9])+.*" "\\1" CPPLIB_VERSION_PATCH ${CPPLIB_VERSION_PATCH_READ})
+
+set("CPPLIB_VERSION_MAJOR" ${CPPLIB_VERSION_MAJOR} CACHE STRING "Major version number for the CppLib")
+set("CPPLIB_VERSION_MINOR" ${CPPLIB_VERSION_MINOR} CACHE STRING "Minor version number for the CppLib")
+set("CPPLIB_VERSION_PATCH" ${CPPLIB_VERSION_PATCH} CACHE STRING "Patch version number for the CppLib")
 
 include("CppLibCompileFlags")
 

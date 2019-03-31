@@ -6,6 +6,8 @@ find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
     # Configuration
+	set(DOXYGEN_PROJECT_NAME "CppLib")
+	set(DOXYGEN_PROJECT_NUMBER ${CPPLIB_VERSION_MAJOR}.${CPPLIB_VERSION_MINOR}.${CPPLIB_VERSION_PATCH})
     set(DOXYGEN_OUTPUT_DIRECTORY "")
     set(DOXYGEN_ALWAYS_SEC "YES")
     set(DOXYGEN_INLINE_INHERITED_MEMB "YES")
@@ -18,7 +20,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_HTML_DYNAMIC_SECTIONS "YES")
     set(DOXYGEN_MACRO_EXPANSION "YES")
 
-    doxygen_add_docs("CppLib" ${LIB_HEADERS})
+    doxygen_add_docs(${PROJECT_NAME} ${LIB_HEADERS})
 elseif()
     MESSAGE(WARNING "Trying to build documentation but the Doxygen executable wasn't found!")
 endif()
