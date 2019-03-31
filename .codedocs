@@ -71,8 +71,8 @@
 # EXAMPLE_PATTERNS =
 # EXAMPLE_RECURSIVE =
 # EXCLUDE =
-EXCLUDE_PATTERNS = */test/*
-                += */example/*
+EXCLUDE_PATTERNS  = */test/*
+EXCLUDE_PATTERNS += */example/*
 # EXCLUDE_SYMBOLS =
 # EXPAND_AS_DEFINED =
 # EXPAND_ONLY_PREDEF =
