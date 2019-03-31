@@ -1,6 +1,3 @@
-## Cpp Lib CMake Base
-# V. 1.1.0
-
 ## GLOBAL SETTINGS
 cmake_minimum_required(VERSION 3.5)
 
@@ -8,8 +5,9 @@ cmake_minimum_required(VERSION 3.5)
 project( "CppLib" CXX )
 
 # Options
-option(CPPLIB_BUILD_TESTS "Build the unit test suite" ON)
-option(CPPLIB_BUILD_DOCS  "Build the doxygen documentation" ON)
+option(CPPLIB_BUILD_TESTS    "Build the unit test suite" ON)
+option(CPPLIB_BUILD_DOCS     "Build the doxygen documentation" ON)
+option(CPPLIB_BUILD_EXAMPLES "Build the example applications" ON)
 
 # Use latest standard available but at least C++-14
 if    (DEFINED CMAKE_CXX20_STANDARD_COMPILE_OPTION OR DEFINED CMAKE_CXX20_EXTENSION_COMPILE_OPTION)
@@ -203,6 +201,11 @@ if (CPPLIB_BUILD_TESTS)
 		endif()
 	endif()
 endif() # CPPLIB_BUILD_TESTS
+
+### Examples
+if (CPPLIB_BUILD_EXAMPLES)
+	add_subdirectory("example")
+endif(CPPLIB_BUILD_EXAMPLES)
 
 find_package(Doxygen)
 
