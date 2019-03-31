@@ -227,3 +227,6 @@ if (DOXYGEN_FOUND AND CPPLIB_BUILD_DOCS)
 elseif(CPPLIB_BUILD_DOCS)
     MESSAGE(WARNING "Trying to build documentation but the Doxygen executable wasn't found!")
 endif()
+
+# Installation
+install(FILES ${LIB_HEADERS} DESTINATION include)
