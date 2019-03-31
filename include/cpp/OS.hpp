@@ -33,7 +33,7 @@
 #        define CPP_OS CPP_OS_UNKNOWN
 #        define CPP_OS_NAME "Unknown"
 #    endif
-#elif defined(__unix__) // Unix based OS
+#elif defined(__unix__) || defined(__unix) // Unix based OS
 #    if defined(__ANDROID__)
 #        define CPP_OS CPP_OS_ANDROID
 #        define CPP_OS_NAME "Android"
@@ -51,6 +51,7 @@
 #        define CPP_OS_NAME "Unknown"
 #        warning "Unknown Unix based operating system"
 #    endif
+#    define CPP_OS_UNIX_BASED
 #elif defined(__sun) && defined(__SVR4)
 #    define CPP_OS CPP_OS_SOLARIS
 #    define CPP_OS_NAME "Solaris"
