@@ -9,7 +9,7 @@ option(CPPLIB_BUILD_TESTS    "Build the unit test suite" ON)
 option(CPPLIB_BUILD_DOCS     "Build the doxygen documentation" ON)
 option(CPPLIB_BUILD_EXAMPLES "Build the example applications" ON)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Read version from file
