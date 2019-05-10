@@ -15,13 +15,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Read version from file
 file(STRINGS "include/cpp/CppLib.hpp"
     CPPLIB_VERSION_MAJOR_READ
-	REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MAJOR+[ \t\r\n]+[0-9]+.*$")
+    REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MAJOR+[ \t\r\n]+[0-9]+.*$")
 file(STRINGS "include/cpp/CppLib.hpp"
     CPPLIB_VERSION_MINOR_READ
-	REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MINOR+[ \t\r\n]+[0-9]+.*$")
+    REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MINOR+[ \t\r\n]+[0-9]+.*$")
 file(STRINGS "include/cpp/CppLib.hpp"
     CPPLIB_VERSION_PATCH_READ
-	REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_PATCH+[ \t\r\n]+[0-9]+.*$")
+    REGEX "^[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_PATCH+[ \t\r\n]+[0-9]+.*$")
 
 string(REGEX REPLACE "[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MAJOR+[ \t\r\n]+([0-9])+.*" "\\1" CPPLIB_VERSION_MAJOR ${CPPLIB_VERSION_MAJOR_READ})
 string(REGEX REPLACE "[ \t\r\n]*#define[ \t\r\n]+CPP_VERSION_MINOR+[ \t\r\n]+([0-9])+.*" "\\1" CPPLIB_VERSION_MINOR ${CPPLIB_VERSION_MINOR_READ})
@@ -40,33 +40,33 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Find all header files
 file(GLOB_RECURSE LIB_HEADERS
-		"include/*.hpp")
+    "include/*.hpp")
 
 # Defined as header only library
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} INTERFACE
-	"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-	"$<INSTALL_INTERFACE:include>" # <prefix>/include
-	)
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>" # <prefix>/include
+    )
 
 # Hack for IDE's like MSVC see https://stackoverflow.com/a/29214327
 add_custom_target(${PROJECT_NAME}_ide SOURCES ${LIB_HEADERS})
 
 ### TESTS
 if (CPPLIB_BUILD_TESTS)
-	add_subdirectory("test")
+    add_subdirectory("test")
 endif(CPPLIB_BUILD_TESTS)
 
 ### Examples
 if (CPPLIB_BUILD_EXAMPLES)
-	add_subdirectory("example")
+    add_subdirectory("example")
 endif(CPPLIB_BUILD_EXAMPLES)
 
 ### Documentation
 if (CPPLIB_BUILD_DOCS)
-	add_subdirectory("docs")
+    add_subdirectory("docs")
 endif(CPPLIB_BUILD_DOCS)
 
 ### Installation
