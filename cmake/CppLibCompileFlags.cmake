@@ -38,6 +38,7 @@ if(MSVC)
     target_compile_options(CppLibCompileFlags INTERFACE "/wd5026") # 'x': move constructor was implicitly defined as deleted
     target_compile_options(CppLibCompileFlags INTERFACE "/wd5027") # 'x': move assignment operator was implicitly defined as deleted
     target_compile_options(CppLibCompileFlags INTERFACE "/wd4548") # expression before comma has no effect; expected expression with side-effect
+    target_compile_options(CppLibCompileFlags INTERFACE "/wd5045") # Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
 
     # Treat warnings as errors when using msvc.
     target_compile_options(CppLibCompileFlags INTERFACE "/WX")
