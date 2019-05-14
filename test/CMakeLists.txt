@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-project("CppLib_test")
+project( "CppLib_test" CXX )
 
 enable_testing()
 

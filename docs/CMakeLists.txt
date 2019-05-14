@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-project("CppLib_documentation")
+project( "CppLib_documentation" CXX )
 
 find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
     # Configuration
-	set(DOXYGEN_PROJECT_NAME "CppLib")
-	set(DOXYGEN_PROJECT_NUMBER ${CPPLIB_VERSION_MAJOR}.${CPPLIB_VERSION_MINOR}.${CPPLIB_VERSION_PATCH})
+    set(DOXYGEN_PROJECT_NAME "CppLib")
+    set(DOXYGEN_PROJECT_NUMBER ${CPPLIB_VERSION_MAJOR}.${CPPLIB_VERSION_MINOR}.${CPPLIB_VERSION_PATCH})
     set(DOXYGEN_OUTPUT_DIRECTORY "")
     set(DOXYGEN_ALWAYS_SEC "YES")
     set(DOXYGEN_INLINE_INHERITED_MEMB "YES")
