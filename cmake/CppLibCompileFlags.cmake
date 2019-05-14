@@ -145,6 +145,7 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     # Disable undesirable warnings
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-unused-function")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-missing-declarations")
+    target_compile_options(CppLibCompileFlags INTERFACE "-Wno-inline")
 
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.5)
         target_compile_options(CppLibCompileFlags INTERFACE "-Wno-error=suggest-attribute=noreturn")
