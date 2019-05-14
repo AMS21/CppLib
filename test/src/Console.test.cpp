@@ -11,6 +11,7 @@
 
 CPP_CLANG_SUPPRESS_WARNING_PUSH
 CPP_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+CPP_CLANG_SUPPRESS_WARNING("-Wglobal-constructors")
 
 const std::string str      = "Hello World";
 const std::string fileName = "Output.txt";
