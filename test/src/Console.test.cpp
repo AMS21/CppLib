@@ -17,7 +17,7 @@ const std::string str      = "Hello World";
 const std::string fileName = "Output.txt";
 
 const std::wstring strW      = L"Hello World";
-const std::wstring fileNameW = L"OutputW.txt";
+const std::string  fileNameW = "OutputW.txt";
 
 CPP_CLANG_SUPPRESS_WARNING_POP
 
