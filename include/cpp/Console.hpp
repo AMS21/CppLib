@@ -31,6 +31,9 @@ For more information, please refer to <http://unlicense.org>
 #include "OS.hpp"
 #include "Warning.hpp"
 
+CPP_GCC_SUPPRESS_WARNING_PUSH
+CPP_GCC_SUPPRESS_WARNING("-Wconversion")
+
 #if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
 #    include <unistd.h>
 
@@ -708,3 +711,5 @@ inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, T
         default: return os;
     }
 }
+
+CPP_GCC_SUPPRESS_WARNING_POP

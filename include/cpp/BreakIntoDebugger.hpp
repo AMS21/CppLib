@@ -13,7 +13,15 @@
 #elif CPP_COMPILER_IS(CPP_COMPILER_MSVC)
 #    define CPP_BREAK_INTO_DEBUGGER() __debugbreak()
 #elif CPP_COMPILER_IS(CPP_COMPILER_MINGW)
+#    include "Warning.hpp"
+
+CPP_GCC_SUPPRESS_WARNING_PUSH
+CPP_GCC_SUPPRESS_WARNING("-Wredundant-decls")
+
 extern "C" __declspec(dllimport) void __stdcall DebugBreak();
+
+CPP_GCC_SUPPRESS_WARNING_POP
+
 #    define CPP_BREAK_INTO_DEBUGGER() ::DebugBreak()
 #elif CPP_OS_IS(CPP_OS_LINUX)
 #    include <signal.h>
