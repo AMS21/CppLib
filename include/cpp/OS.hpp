@@ -5,14 +5,14 @@
 ////////////////////////////////////////////////////////////
 
 // clang-format off
-#define CPP_OS_WINDOWS (0x0000) /* meaningless number */
-#define CPP_OS_MACOS   (0x0001) /* meaningless number */
-#define CPP_OS_LINUX   (0x0002) /* meaningless number */
-#define CPP_OS_ANDROID (0x0003) /* meaningless number */
-#define CPP_OS_FREEBSD (0x0004) /* meaningless number */
-#define CPP_OS_SOLARIS (0x0005) /* meaningless number */
-#define CPP_OS_IOS     (0x0006) /* meaningless number */
-#define CPP_OS_OPENBSD (0x0007) /* meaningless number */
+#define CPP_OS_WINDOWS (0x0001) /* meaningless number */
+#define CPP_OS_MACOS   (0x0002) /* meaningless number */
+#define CPP_OS_LINUX   (0x0003) /* meaningless number */
+#define CPP_OS_ANDROID (0x0004) /* meaningless number */
+#define CPP_OS_FREEBSD (0x0005) /* meaningless number */
+#define CPP_OS_SOLARIS (0x0006) /* meaningless number */
+#define CPP_OS_IOS     (0x0007) /* meaningless number */
+#define CPP_OS_OPENBSD (0x0008) /* meaningless number */
 #define CPP_OS_UNKNOWN (0xFFFF) /* meaningless number */
 // clang-format on
 

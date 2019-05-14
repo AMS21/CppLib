@@ -13,33 +13,33 @@
  * \def CPP_COMPILER_CLANG
  * \brief CPP_COMPILER will be defined as this if clang is being used.
 **/
-#define CPP_COMPILER_CLANG (0x0000) /* meaningless number */
+#define CPP_COMPILER_CLANG (0x0001) /* meaningless number */
 
 /*!
  * \def CPP_COMPILER_ICC
  * \brief CPP_COMPILER will be defined as this
  *        if Intel C++ Compiler is being used.
 **/
-#define CPP_COMPILER_ICC (0x0001) /* meaningless number */
+#define CPP_COMPILER_ICC (0x0002) /* meaningless number */
 
 /*!
  * \def CPP_COMPILER_MSVC
  * \brief CPP_COMPILER will be defined as this if Microsoft Visual Compiler is
  *        being used.
 **/
-#define CPP_COMPILER_MSVC (0x0002) /* meaningless number */
+#define CPP_COMPILER_MSVC (0x0003) /* meaningless number */
 
 /*!
  * \def CPP_COMPILER_GCC
  * \brief CPP_COMPILER will be defined as this if gcc is being used.
 **/
-#define CPP_COMPILER_GCC (0x0003) /* meaningless number */
+#define CPP_COMPILER_GCC (0x0004) /* meaningless number */
 
 /*!
  * \def CPP_COMPILER_MINGW
  * \brief CPP_COMPILER will be defined as this if MinGW or MinGW-w64 is being used.
 **/
-#define CPP_COMPILER_MINGW (0x0004) /* meaningless number */
+#define CPP_COMPILER_MINGW (0x0005) /* meaningless number */
 
 /*!
 * \def CPP_COMPILER_UNKNOWN
