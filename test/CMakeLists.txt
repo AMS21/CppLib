@@ -9,12 +9,12 @@ file(GLOB TEST_HEADERS
 	)
 
 file(GLOB TEST_SOURCES
-	"src/AnonymousName_test.cpp"
-	"src/At_test.cpp"
-	"src/Console_test.cpp"
-	"src/CppLib_test.cpp"
+	"src/AnonymousName.test.cpp"
+	"src/At.test.cpp"
+	"src/Console.test.cpp"
+	"src/CppLib.test.cpp"
 	"src/main.cpp"
-	"src/NamedType_test.cpp"
+	"src/NamedType.test.cpp"
 	)
 
 add_executable(${PROJECT_NAME}
