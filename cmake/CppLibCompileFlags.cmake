@@ -68,6 +68,7 @@ elseif(CMAKE_CXX_COMPILER MATCHES ".*clang")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-padded")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-unused-parameter")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-unused-template")
+    target_compile_options(CppLibCompileFlags INTERFACE "-Wno-unused-variable")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-weak-vtables")
 
     # Optimization flags
