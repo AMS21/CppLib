@@ -16,8 +16,8 @@ decltype(auto) tee(T&& value)
     return std::forward<T>(value);
 }
 
-using Meter = cpp::NamedType<double, struct MeterParameter, cpp::Addable, cpp::Comparable>;
-Meter operator"" _meter(unsigned long long value) { return Meter(static_cast<double>(value)); }
+using Meter = cpp::NamedType<unsigned long long, struct MeterParameter, cpp::Addable, cpp::Comparable>;
+Meter operator"" _meter(unsigned long long value) { return Meter(value); }
 //Meter operator"" _meter(long double value) { return Meter(value); }
 
 using Width  = cpp::NamedType<Meter, struct WidthParameter>;
@@ -390,8 +390,8 @@ TEST_CASE("Named arguments")
     using LastName  = cpp::NamedType<std::string, struct LastNameTag>;
     static const FirstName::argument firstName;
     static const LastName::argument  lastName;
-    auto                             getFullName = [](const FirstName& firstName, const LastName& lastName) {
-        return firstName.get() + lastName.get();
+    auto                             getFullName = [](const FirstName& first_name, const LastName& last_name) {
+        return first_name.get() + last_name.get();
     };
 
     auto fullName = getFullName(firstName = "James", lastName = "Bond");
