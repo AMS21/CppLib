@@ -53,22 +53,22 @@ namespace cpp
 
         // constructor
         template <typename T_ = T, typename = std::enable_if<std::is_default_constructible<T>::value, void>>
-        constexpr NamedType() noexcept(noexcept(T()))
+        constexpr NamedType() noexcept(std::is_nothrow_constructible<T>::value)
         {}
 
-        explicit constexpr NamedType(const T& value) noexcept(noexcept(T(value)))
+        explicit constexpr NamedType(const T& value) noexcept(std::is_nothrow_copy_constructible<T>::value)
             : mValue(value)
         {}
 
         template <typename T_ = T, typename = detail::IsNotReference<T_>>
-        explicit constexpr NamedType(T&& value) noexcept(noexcept(T(std::move(value))))
+        explicit constexpr NamedType(T&& value) noexcept(std::is_nothrow_move_constructible<T>::value)
             : mValue(std::move(value))
         {}
 
         // get
         [[nodiscard]] constexpr T& get() noexcept { return mValue; }
 
-        [[nodiscard]] constexpr const std::remove_reference_t<T>& get() const noexcept { return mValue; }
+        [[nodiscard]] constexpr const T& get() const noexcept { return mValue; }
 
         // conversions
         using ref = NamedType<T&, Parameter, Skills...>;
@@ -79,8 +79,14 @@ namespace cpp
             template <typename U>
             NamedType operator=(U&& value) const
             {
+                CPP_GCC_SUPPRESS_WARNING_PUSH
+                CPP_GCC_SUPPRESS_WARNING("-Weffc++")
+
                 return NamedType(std::forward<U>(value));
+
+                CPP_GCC_SUPPRESS_WARNING_POP
             }
+
             argument()                = default;
             argument(argument const&) = delete;
             argument(argument&&)      = delete;
@@ -89,7 +95,7 @@ namespace cpp
         };
 
     private:
-        T mValue;
+        T mValue{};
     };
 
     template <template <typename T> class StrongType, typename T>
@@ -361,6 +367,11 @@ namespace std
         using NamedType       = cpp::NamedType<T, Parameter, Skills...>;
         using checkIfHashable = typename std::enable_if<NamedType::is_hashable, void>::type;
 
-        size_t operator()(const cpp::NamedType<T, Parameter, Skills...>& x) const { return std::hash<T>()(x.get()); }
+        size_t operator()(const cpp::NamedType<T, Parameter, Skills...>& x) const noexcept
+        {
+            static_assert(noexcept(std::hash<T>()(x.get())), "hash function should not throw");
+
+            return std::hash<T>()(x.get());
+        }
     };
 } // namespace std
