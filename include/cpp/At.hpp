@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Assert.hpp"
 #include <cstddef>
 
 // TODO: No discard?
@@ -18,7 +17,7 @@ namespace cpp
     template <typename Type, std::size_t Size>
     constexpr Type& at(Type (&arr)[Size], std::size_t index)
     {
-        CPP_DBG_CHECK_BOUNDS(index, 0, Size - 1);
+        //CPP_DBG_CHECK_BOUNDS(index, 0, Size - 1);
 
         return arr[index];
     }
@@ -34,7 +33,7 @@ namespace cpp
     template <typename Container>
     constexpr auto at(Container& container, std::size_t index) -> decltype(container[container.size()])
     {
-        CPP_DBG_CHECK_BOUNDS(index, 0, container.size() - 1);
+        //CPP_DBG_CHECK_BOUNDS(index, 0, container.size() - 1);
 
         return container[index];
     }
@@ -50,7 +49,7 @@ namespace cpp
     template <typename Type>
     constexpr Type at(std::initializer_list<Type> il, std::size_t index)
     {
-        CPP_DBG_CHECK_BOUNDS(index, 0, il.size() - 1);
+        //CPP_DBG_CHECK_BOUNDS(index, 0, il.size() - 1);
 
         return *(il.begin() + index);
     }
