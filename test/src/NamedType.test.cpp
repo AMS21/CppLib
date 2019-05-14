@@ -410,9 +410,9 @@ TEST_CASE("Default constructible")
 
 struct throw_on_construction
 {
-    throw_on_construction() { throw 42; }
+    [[noreturn]] throw_on_construction() { throw 42; }
 
-    throw_on_construction(int) { throw "exception"; }
+    [[noreturn]] throw_on_construction(int) { throw "exception"; }
 };
 
 using C = cpp::NamedType<throw_on_construction, struct throwTag>;
