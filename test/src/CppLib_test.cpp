@@ -25,5 +25,5 @@ TEST_CASE("CppLib.ConstexprValues")
 
     CHECK_EQ(CPP_VERSION, cpp::Version);
 
-    CHECK_EQ(std::string(CPP_VERSION_STR), std::string(cpp::VersionStr));
+    CHECK_EQ(CPP_VERSION_STR, cpp::VersionStr);
 }

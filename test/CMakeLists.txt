@@ -4,17 +4,17 @@ project( "CppLib_test" CXX )
 
 enable_testing()
 
-file(GLOB_RECURSE TEST_HEADERS
+file(GLOB TEST_HEADERS
 	"include/doctest.h"
 	)
 
-file(GLOB_RECURSE TEST_SOURCES
+file(GLOB TEST_SOURCES
 	"src/AnonymousName_test.cpp"
 	"src/At_test.cpp"
 	"src/Console_test.cpp"
 	"src/CppLib_test.cpp"
 	"src/main.cpp"
-	"src/NamedTypee_test.cpp"
+	"src/NamedType_test.cpp"
 	)
 
 add_executable(${PROJECT_NAME}
@@ -23,6 +23,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} CppLib CppLibCompileFlags)
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING")
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD ${LatestCXXStandard}
 	CXX_STANDARD_REQUIRED ON)
