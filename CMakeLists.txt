@@ -98,7 +98,7 @@ install(
     DESTINATION "include"
 )
 
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}PublicFlags EXPORT ${PROJECT_NAME}Targets)
 
 include(CMakePackageConfigHelpers)
 set(CONFIG_PACKAGE_BUILD_LOCATION   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")

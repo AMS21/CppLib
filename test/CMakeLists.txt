@@ -21,7 +21,10 @@ add_executable(${PROJECT_NAME}
 	"${TEST_HEADERS}"
 	"${TEST_SOURCES}")
 
-target_link_libraries(${PROJECT_NAME} CppLib CppLibCompileFlags)
+target_link_libraries(${PROJECT_NAME}
+	PRIVATE
+		CppLib::CppLib
+		CppLib::CompileFlags)
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING")
 set_target_properties(${PROJECT_NAME} PROPERTIES
