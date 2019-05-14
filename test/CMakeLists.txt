@@ -29,4 +29,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD ${LatestCXXStandard}
 	CXX_STANDARD_REQUIRED ON)
 
-add_test(Unittest ${PROJECT_NAME})
+add_test(Unittest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME})
