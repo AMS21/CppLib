@@ -66,6 +66,9 @@ file(GLOB LIB_HEADERS
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
+# Link public flags
+target_link_libraries(${PROJECT_NAME} INTERFACE CppLib::PublicFlags)
+
 target_include_directories(${PROJECT_NAME} INTERFACE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>" # <prefix>/include

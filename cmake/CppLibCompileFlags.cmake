@@ -14,6 +14,12 @@ else()
 endif()
 
 add_library(CppLibCompileFlags INTERFACE)
+add_library(CppLibPublicFlags INTERFACE)
+
+# Targe alias
+add_library(CppLib::CompileFlags ALIAS CppLibCompileFlags)
+add_library(CppLib::PublicFlags ALIAS CppLibPublicFlags)
+
 
 # MSVC settings
 if(MSVC)
@@ -70,9 +76,9 @@ elseif(CMAKE_CXX_COMPILER MATCHES ".*clang")
 
     # processor architecture
     if(ARCH STREQUAL "x86")
-        target_compile_options(CppLibCompileFlags INTERFACE "-m32")
+        target_compile_options(CppLibPublicFlags INTERFACE "-m32")
     elseif(ARCH STREQUAL "x64")
-        target_compile_options(CppLibCompileFlags INTERFACE "-m64")
+        target_compile_options(CppLibPublicFlags INTERFACE "-m64")
     endif()
 
 # GCC settings
@@ -147,8 +153,8 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 
     # processor architecture
     if(ARCH STREQUAL "x86")
-        target_compile_options(CppLibCompileFlags INTERFACE "-m32")
+        target_compile_options(CppLibPublicFlags INTERFACE "-m32")
     elseif(ARCH STREQUAL "x64")
-        target_compile_options(CppLibCompileFlags INTERFACE "-m64")
+        target_compile_options(CppLibPublicFlags INTERFACE "-m64")
     endif()
 endif()
