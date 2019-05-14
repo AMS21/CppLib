@@ -79,6 +79,8 @@ add_custom_target(${PROJECT_NAME}_ide SOURCES ${LIB_HEADERS})
 
 ### TESTS
 if (CPPLIB_BUILD_TESTS)
+    enable_testing()
+
     add_subdirectory("test")
 endif(CPPLIB_BUILD_TESTS)
 
