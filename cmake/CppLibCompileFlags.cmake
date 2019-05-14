@@ -49,6 +49,7 @@ elseif(CMAKE_CXX_COMPILER MATCHES ".*clang")
     target_compile_options(CppLibCompileFlags INTERFACE "-Werror")
 
     # Disable undesirable warnings
+    target_compile_options(CppLibCompileFlags INTERFACE "-Wno-covered-switch-default")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-c++1z-extensions")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-c++98-compat")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wno-c++98-compat-pedantic")
