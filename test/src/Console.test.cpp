@@ -3,16 +3,22 @@
 
 #include "cpp/Console.hpp"
 #include "cpp/OS.hpp"
+#include "cpp/Warning.hpp"
 #include "doctest.h"
 
 #include <fstream>
 #include <string>
 
+CPP_CLANG_SUPPRESS_WARNING_PUSH
+CPP_CLANG_SUPPRESS_WARNING("-Wexit-time-destructors")
+
 const std::string str      = "Hello World";
 const std::string fileName = "Output.txt";
 
-const std::wstring strW      = L"Héllö Wörld";
+const std::wstring strW      = L"Hello World";
 const std::wstring fileNameW = L"OutputW.txt";
+
+CPP_CLANG_SUPPRESS_WARNING_POP
 
 TEST_CASE("printing with control::Off and cout")
 {
