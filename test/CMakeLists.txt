@@ -5,10 +5,17 @@ project( "CppLib_test" CXX )
 enable_testing()
 
 file(GLOB_RECURSE TEST_HEADERS
-	"include/*.hpp")
+	"include/doctest.h"
+	)
 
 file(GLOB_RECURSE TEST_SOURCES
-	"src/*.cpp")
+	"src/AnonymousName_test.cpp"
+	"src/At_test.cpp"
+	"src/Console_test.cpp"
+	"src/CppLib_test.cpp"
+	"src/main.cpp"
+	"src/NamedTypee_test.cpp"
+	)
 
 add_executable(${PROJECT_NAME}
 	"${TEST_HEADERS}"

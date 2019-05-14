@@ -39,8 +39,28 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Find all header files
-file(GLOB_RECURSE LIB_HEADERS
-    "include/*.hpp")
+file(GLOB LIB_HEADERS
+    "include/cpp/AnonymousName.hpp"
+    "include/cpp/Assume.hpp"
+    "include/cpp/At.hpp"
+    "include/cpp/BeginEndMacro.hpp"
+    "include/cpp/BreakIntoDebugger.hpp"
+    "include/cpp/Compiler.hpp"
+    "include/cpp/Console.hpp"
+    "include/cpp/CppLib.hpp"
+    "include/cpp/CurrentFunction.hpp"
+    "include/cpp/Debug.hpp"
+    "include/cpp/Glue.hpp"
+    "include/cpp/Inline.hpp"
+    "include/cpp/Likely.hpp"
+    "include/cpp/NamedType.hpp"
+    "include/cpp/NonCopyable.hpp"
+    "include/cpp/OS.hpp"
+    "include/cpp/SourceLine.hpp"
+    "include/cpp/Stringify.hpp"
+    "include/cpp/Versioning.hpp"
+    "include/cpp/Warning.hpp"
+    )
 
 # Defined as header only library
 add_library(${PROJECT_NAME} INTERFACE)
