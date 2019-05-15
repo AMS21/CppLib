@@ -328,8 +328,8 @@ namespace cpp
     struct MethodCallable<NamedType<T, Parameter, Skills...>>
         : detail::crtp<NamedType<T, Parameter, Skills...>, MethodCallable>
     {
-        T*       operator->() { return std::addressof(this->underlying().get()); }
-        T const* operator->() const { return std::addressof(this->underlying().get()); }
+        std::remove_reference_t<T>*       operator->() { return std::addressof(this->underlying().get()); }
+        std::remove_reference_t<T> const* operator->() const { return std::addressof(this->underlying().get()); }
     };
 
     template <typename NamedType_>
