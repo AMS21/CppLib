@@ -262,7 +262,7 @@ namespace cpp
     template <typename T>
     struct Negatable : detail::crtp<T, Negatable>
     {
-        T operator-() const { return T(-this->underlying().get()); }
+        T negate() const { return T(-this->underlying().get()); }
     };
 
     template <typename T>

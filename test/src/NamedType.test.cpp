@@ -205,7 +205,7 @@ TEST_CASE("Negatable")
 {
     using NegatableType = cpp::NamedType<int, struct NegatableTag, cpp::Negatable>;
     NegatableType value(10);
-    CHECK_EQ((-value).get(), -10);
+    CHECK_EQ(value.negate().get(), -10);
 }
 
 TEST_CASE("Comparable")
