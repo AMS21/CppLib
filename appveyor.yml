@@ -30,20 +30,6 @@ build_script:
   - IF "%gen%" == "MinGW" cmake --build . -- -j2
   - IF "%gen%" == "MinGW" ctest --output-on-failure .
   - IF "%gen%" == "MinGW" cd ..
-  # Debug x86
-  - IF "%gen%" == "MinGW" mkdir Debug_x86
-  - IF "%gen%" == "MinGW" cd Debug_x86
-  - IF "%gen%" == "MinGW" cmake .. -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Debug
-  - IF "%gen%" == "MinGW" cmake --build . -- -j2
-  - IF "%gen%" == "MinGW" ctest --output-on-failure .
-  - IF "%gen%" == "MinGW" cd ..
-  # Release x86
-  - IF "%gen%" == "MinGW" mkdir Release_x86
-  - IF "%gen%" == "MinGW" cd Release_x86
-  - IF "%gen%" == "MinGW" cmake .. -G "MinGW Makefiles" -DARCH=x86 -DCMAKE_BUILD_TYPE=Release
-  - IF "%gen%" == "MinGW" cmake --build . -- -j2
-  - IF "%gen%" == "MinGW" ctest --output-on-failure .
-  - IF "%gen%" == "MinGW" cd ..
   # Exit
   - IF "%gen%" == "MinGW" appveyor exit
   # ============= VISUAL STUDIO
