@@ -18,7 +18,7 @@
 #include "Warning.hpp"
 #include <iostream>    // std::basic_ostream
 #include <memory>      // std::addressof
-#include <type_traits> // std::remove_reference_t, std::enable_if, std::remove_reference_t
+#include <type_traits> // std::remove_reference_t, std::enable_if
 #include <utility>     // std::move, std::forward
 
 // Enable empty base class optimization with multiple inheritance on Visual Studio.
