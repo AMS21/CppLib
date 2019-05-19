@@ -16,7 +16,7 @@ addons:
 matrix:
   include:
     # coverage
-    - env: COMPILER_CXX=g++-8 CODE_COVERAGE=true
+    - env: COMPILER=g++-8 CODE_COVERAGE=true
       compiler: gcc
       os: linux
       addons: &gcc8
