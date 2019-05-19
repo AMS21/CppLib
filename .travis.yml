@@ -27,7 +27,6 @@ matrix:
     # GCC 8 x86
     - env: COMPILER=g++-8 ARCH=x86 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
       compiler: gcc
-      sudo: required
       os: linux
       addons: &gcc8
         apt:
@@ -37,7 +36,6 @@ matrix:
     # GCC 8 x64
     - env: COMPILER=g++-8 ARCH=x64 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
       compiler: gcc
-      sudo: required
       os: linux
       addons: &gcc8
         apt:
