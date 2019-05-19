@@ -21,7 +21,7 @@ matrix:
       os: linux
       addons: &gcc8
         apt:
-          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386"]
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386"]
           sources: *apt_sources
 
     # GCC 8 x86
@@ -30,7 +30,7 @@ matrix:
       os: linux
       addons: &gcc8
         apt:
-          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # GCC 8 x64
@@ -39,7 +39,7 @@ matrix:
       os: linux
       addons: &gcc8
         apt:
-          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # Clang 8.0 x86
