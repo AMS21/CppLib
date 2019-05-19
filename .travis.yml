@@ -139,7 +139,7 @@ script:
       ctest -j2 --output-on-failure || exit 1
       # lcov
       lcov --directory . --capture --output-file coverage.info --gcov-tool gcov-8 # capture coverage info
-      lcov --remove coverage.info '/usr/*' 'test/include/*' 'test/src/*' --output-file coverage.info # filter out system and tests
+      lcov --remove coverage.info '/usr/*' '${TRAVIS_BUILD_DIR}/test/*' --output-file coverage.info # filter out system and tests
       lcov --list coverage.info # debug info
       # Uploading report to CodeCov
       bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
