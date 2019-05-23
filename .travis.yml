@@ -15,24 +15,31 @@ addons:
 
 matrix:
   include:
-    # GCC 8 x86
-    - env: COMPILER=g++-8 ARCH=x86 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
+    # coverage
+    - env: COMPILER=g++-8 CODE_COVERAGE=true
       compiler: gcc
-      sudo: required
       os: linux
       addons: &gcc8
         apt:
-          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-6", "valgrind"]
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386"]
+          sources: *apt_sources
+
+    # GCC 8 x86
+    - env: COMPILER=g++-8 ARCH=x86 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
+      compiler: gcc
+      os: linux
+      addons: &gcc8
+        apt:
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # GCC 8 x64
     - env: COMPILER=g++-8 ARCH=x64 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
       compiler: gcc
-      sudo: required
       os: linux
       addons: &gcc8
         apt:
-          packages: ["g++-8",     "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-6", "valgrind"]
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # Clang 8.0 x86
@@ -41,7 +48,7 @@ matrix:
       os: linux
       addons: &clang8
         apt:
-          packages: ["clang-8", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-8", "valgrind"]
+          packages: ["clang-8", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # Clang 8.0 x64
@@ -50,7 +57,7 @@ matrix:
       os: linux
       addons: &clang8
         apt:
-          packages: ["clang-8", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "g++-8", "valgrind"]
+          packages: ["clang-8", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # Xcode 10.2 Clang x64
@@ -68,18 +75,26 @@ install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 
-    # Install a recent CMake
+  # Install a recent CMake
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="https://www.cmake.org/files/v3.14/cmake-3.14.3-Linux-x86_64.tar.gz"
+      CMAKE_URL="https://www.cmake.org/files/v3.14/cmake-3.14.4-Linux-x86_64.tar.gz"
       mkdir cmake && travis_retry wget --no-check-certificate -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
 
+  # Install lcov
+  - |
+    if [[ "${CODE_COVERAGE}" = "true" ]]; then
+      LCOV_URL="https://github.com/linux-test-project/lcov/releases/download/v1.14/lcov-1.14.tar.gz"
+      mkdir lcov && travis_retry wget --no-check-certificate -O - ${LCOV_URL} | tar --strip-components=1 -xz -C lcov
+      cd lcov
+      make install
+      export PATH=${DEPS_DIR}/lcov/bin:${PATH}
+    fi
+
   # Go back to ${TRAVIS_BUILD_DIR}
   - cd ${TRAVIS_BUILD_DIR}
-  # export CXX compiler
-  - export CXX="${COMPILER}"
 
   ############################################################################
   # Install stuff with homebrew under OSX
@@ -97,6 +112,7 @@ install:
         brew install cmake
       fi
     fi
+  # export CXX compiler
   - export CXX="${COMPILER}"
 #  - export CXX="ccache ${COMPILER}"
 #  - ccache -s
@@ -106,6 +122,30 @@ before_script:
   - cmake --version
 
 script:
+  ############################################################################
+  # code coverage
+  ############################################################################
+
+  - |
+    if [[ "${CODE_COVERAGE}" = "true" ]]; then
+      # Display version
+      lcov --version
+      gcov --version
+      # Build
+      cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Debug -DARCH=x86 -DCMAKE_CXX_FLAGS="-g -O0 -fprofile-arcs -ftest-coverage --coverage" . || exit 1
+      cmake --build . -- -j2 || exit 1
+      ctest -j2 --output-on-failure || exit 1
+      # lcov
+      lcov --directory . --capture --output-file coverage.info --gcov-tool gcov-8 # capture coverage info
+      lcov --remove coverage.info "/usr/*" --output-file coverage.info # filter out system
+      lcov --remove coverage.info "$(readlink -f test)/*" --output-file coverage.info # filter out tests
+      lcov --list coverage.info # debug info
+      # Uploading report to CodeCov
+      bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+      # do not continue with other build configurations after that
+      exit
+    fi
+
   # initial run with options
   - cmake ${CMAKE_OPTIONS_GLOBAL} ${CMAKE_OPTIONS} -DCMAKE_CXX_COMPILER=${CXX} -DARCH=${ARCH} .
 
