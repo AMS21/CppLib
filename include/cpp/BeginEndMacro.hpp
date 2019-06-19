@@ -24,3 +24,11 @@
 #define CPP_END_MACRO } while ((void) 0, 0) /* avoid warnings */
 
 // clang-format on
+
+/*!
+ * \def CPP_EMPTY_MACRO
+ * \brief To be used to define a macro which does nothing/is empty and
+ *        that shall be force to require a semicolon when used.
+ * \see CPP_BEGIN_MACRO, CPP_END_MACRO
+**/
+#define CPP_EMPTY_MACRO ((void)0)
