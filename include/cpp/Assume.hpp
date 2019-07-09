@@ -1,3 +1,7 @@
+/*!
+ * \file Assume.hpp
+ * \brief Exports a macro for compiler optimizations.
+**/
 #pragma once
 
 #include "BeginEndMacro.hpp"
