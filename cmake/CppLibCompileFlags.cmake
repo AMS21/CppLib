@@ -20,6 +20,12 @@ add_library(CppLibPublicFlags INTERFACE)
 add_library(CppLib::CompileFlags ALIAS CppLibCompileFlags)
 add_library(CppLib::PublicFlags ALIAS CppLibPublicFlags)
 
+# CMake version before 3.13 do not provide 'target_link_options' <https://cmake.org/cmake/help/latest/command/target_link_options.html>
+if (CMAKE_VERSION VERSION_LESS "3.13")
+    macro(target_link_options)
+        target_link_libraries(${ARGV0} ${ARGV1} ${ARGV2})
+    endmacro(target_link_options)
+endif()
 
 # MSVC settings
 if(MSVC)
