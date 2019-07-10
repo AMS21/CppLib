@@ -26,6 +26,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org>
 */
+
+/*!
+ * \file Console.hpp
+ * \brief Defines functions to help with console output.
+ *	      Like different styles or coloring.
+ *
+ * This implementation is heavily based upon Abhinav Gauniyal's excellent rang Library.
+ * https://github.com/agauniyal/rang
+**/
 #pragma once
 
 #include "OS.hpp"
