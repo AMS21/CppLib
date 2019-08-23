@@ -536,11 +536,11 @@ namespace cpp
         }
 #else
         template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
-        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& mOS, T const value)
+        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& os, T const value)
         {
-            StreamScopeGuard<CharT, Traits> guard(mOS);
-            mOS.mFlags(std::ios::dec | std::ios::left);
-            return mOS << "\033[" << static_cast<int>(value) << "m";
+            StreamScopeGuard<CharT, Traits> guard(os);
+            os.mFlags(std::ios::dec | std::ios::left);
+            return os << "\033[" << static_cast<int>(value) << "m";
         }
 #endif
 
@@ -632,10 +632,10 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
     const auto useCursor = [&]() -> std::basic_ostream<CharT, Traits>& {
         const auto&& drv = static_cast<T const&&>(base);
 #if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
-        cpp::detail::StreamScopeGuard<CharT, Traits> guard(mOS);
-        mOS.mFlags(std::ios::dec | std::ios::left);
-        drv.execAnsi(mOS);
-        mOS.flush();
+        cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+        os.mFlags(std::ios::dec | std::ios::left);
+        drv.execAnsi(os);
+        os.flush();
 #elif CPP_OS_IS(CPP_OS_WINDOWS)
         if (cpp::detail::winTermMode() == cpp::winTerm::Auto)
         {
