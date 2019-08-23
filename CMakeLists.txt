@@ -66,6 +66,7 @@ file(GLOB LIB_HEADERS
     "include/cpp/NonCopyable.hpp"
     "include/cpp/OS.hpp"
     "include/cpp/SourceLine.hpp"
+    "include/cpp/StreamScopeGuard.hpp"
     "include/cpp/Stringify.hpp"
     "include/cpp/Versioning.hpp"
     "include/cpp/Warning.hpp"
