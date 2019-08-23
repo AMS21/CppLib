@@ -38,6 +38,7 @@ For more information, please refer to <http://unlicense.org>
 #pragma once
 
 #include "OS.hpp"
+#include "StreamScopeGuard.hpp"
 #include "Warning.hpp"
 
 CPP_GCC_SUPPRESS_WARNING_PUSH
@@ -310,33 +311,6 @@ namespace cpp
             return false;
         }
 
-        template <typename CharT, typename Traits>
-        class StreamScopeGuard
-        {
-            std::basic_ostream<CharT, Traits>& os;
-            const std::ios_base::fmtflags      flags;
-            const std::streamsize              width;
-            const std::streamsize              precision;
-
-        public:
-            StreamScopeGuard(std::basic_ostream<CharT, Traits>& _os)
-                : os(_os)
-                , flags(os.flags())
-                , width(os.width())
-                , precision(os.precision())
-            {
-                os.width(0);
-                os.precision(0);
-            }
-
-            ~StreamScopeGuard()
-            {
-                os.flags(flags);
-                os.width(width);
-                os.precision(precision);
-            }
-        };
-
         template <typename T>
         using enableConsole =
                 typename std::enable_if<std::is_same<T, cpp::style>::value || std::is_same<T, cpp::fg>::value ||
@@ -562,11 +536,11 @@ namespace cpp
         }
 #else
         template <typename CharT, typename Traits, typename T, typename = enableConsole<T>>
-        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& os, T const value)
+        inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& mOS, T const value)
         {
-            StreamScopeGuard<CharT, Traits> guard(os);
-            os.flags(std::ios::dec | std::ios::left);
-            return os << "\033[" << static_cast<int>(value) << "m";
+            StreamScopeGuard<CharT, Traits> guard(mOS);
+            mOS.mFlags(std::ios::dec | std::ios::left);
+            return mOS << "\033[" << static_cast<int>(value) << "m";
         }
 #endif
 
@@ -658,16 +632,16 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
     const auto useCursor = [&]() -> std::basic_ostream<CharT, Traits>& {
         const auto&& drv = static_cast<T const&&>(base);
 #if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
-        cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
-        os.flags(std::ios::dec | std::ios::left);
-        drv.execAnsi(os);
-        os.flush();
+        cpp::detail::StreamScopeGuard<CharT, Traits> guard(mOS);
+        mOS.mFlags(std::ios::dec | std::ios::left);
+        drv.execAnsi(mOS);
+        mOS.flush();
 #elif CPP_OS_IS(CPP_OS_WINDOWS)
         if (cpp::detail::winTermMode() == cpp::winTerm::Auto)
         {
             if (cpp::detail::supportsAnsi(os.rdbuf()))
             {
-                cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+                cpp::StreamScopeGuard<CharT, Traits> guard(os);
                 os.flags(std::ios::dec | std::ios::left);
                 drv.execAnsi(os);
                 os.flush();
@@ -679,7 +653,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
         }
         else if (cpp::detail::winTermMode() == cpp::winTerm::Ansi)
         {
-            cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
+            cpp::StreamScopeGuard<CharT, Traits> guard(os);
             os.flags(std::ios::dec | std::ios::left);
             drv.execAnsi(os);
             os.flush();
