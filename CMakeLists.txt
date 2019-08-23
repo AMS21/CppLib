@@ -11,7 +11,7 @@ if (NOT DEFINED CPPLIB_MASTER_PROJECT)
     else()
         set(CPPLIB_MASTER_PROJECT OFF)
     endif()
-endif ()
+endif()
 
 # Options
 option(CPPLIB_BUILD_TESTS    "Build the unit test suite" ${CPPLIB_MASTER_PROJECT})
