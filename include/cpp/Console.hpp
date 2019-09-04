@@ -539,7 +539,7 @@ namespace cpp
         inline std::basic_ostream<CharT, Traits>& setColor(std::basic_ostream<CharT, Traits>& os, T const value)
         {
             StreamScopeGuard<CharT, Traits> guard(os);
-            os.mFlags(std::ios::dec | std::ios::left);
+            os.flags(std::ios::dec | std::ios::left);
             return os << "\033[" << static_cast<int>(value) << "m";
         }
 #endif
@@ -632,8 +632,8 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
     const auto useCursor = [&]() -> std::basic_ostream<CharT, Traits>& {
         const auto&& drv = static_cast<T const&&>(base);
 #if CPP_OS_UNIX_BASED || CPP_OS_IS(CPP_OS_MACOS)
-        cpp::detail::StreamScopeGuard<CharT, Traits> guard(os);
-        os.mFlags(std::ios::dec | std::ios::left);
+        cpp::StreamScopeGuard<CharT, Traits> guard(os);
+        os.flags(std::ios::dec | std::ios::left);
         drv.execAnsi(os);
         os.flush();
 #elif CPP_OS_IS(CPP_OS_WINDOWS)
