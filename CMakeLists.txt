@@ -14,9 +14,9 @@ if (NOT DEFINED CPPLIB_MASTER_PROJECT)
 endif()
 
 # Options
-option(CPPLIB_BUILD_TESTS    "Build the unit test suite" ${CPPLIB_MASTER_PROJECT})
+option(CPPLIB_BUILD_TESTS    "Build the unit test suite"       ${CPPLIB_MASTER_PROJECT})
 option(CPPLIB_BUILD_DOCS     "Build the doxygen documentation" ${CPPLIB_MASTER_PROJECT})
-option(CPPLIB_BUILD_EXAMPLES "Build the example applications" ${CPPLIB_MASTER_PROJECT})
+option(CPPLIB_BUILD_EXAMPLES "Build the example applications"  ${CPPLIB_MASTER_PROJECT})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

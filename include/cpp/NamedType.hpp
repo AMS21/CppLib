@@ -10,7 +10,7 @@
 // List of changes:
 // Constructor is noexcept if constructing T is noexcept
 // noexcept on get
-// NamedType is default constructible if T is default constructible
+// NamedType is default constructable if T is default constructable
 // Added PostIncrementable
 // Added Divisible
 // Added Modulable

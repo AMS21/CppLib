@@ -1,5 +1,5 @@
 /*!
- * \file AnonymouseName.hpp
+ * \file AnonymousName.hpp
  * \brief Exports a macro that simplifies the definition functions or variables
  *        with an anonymous name.
 **/
