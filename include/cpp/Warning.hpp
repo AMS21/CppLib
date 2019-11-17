@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_WARNING_HPP
+#define INCG_CPPLIB_WARNING_HPP
 
 #include "Compiler.hpp"
 #include "Stringify.hpp"
@@ -61,3 +62,5 @@
 #endif
 
 #define CPP_UNUSED_PARAMETER(parameter) ((void)(parameter))
+
+#endif // INCG_CPPLIB_WARNING_HPP

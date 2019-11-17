@@ -5,7 +5,8 @@
  *
  * This implementation is mostly based upon this article https://sourceforge.net/p/predef/wiki/Compilers
 **/
-#pragma once
+#ifndef INCG_CPPLIB_COMPILER_HPP
+#define INCG_CPPLIB_COMPILER_HPP
 
 #include "Versioning.hpp" // CPP_VERSION_CREATE
 
@@ -235,3 +236,5 @@
 **/
 #define CPP_COMPILER_IS_BELOW(compiler, major, minor, patch)                                                           \
     (CPP_COMPILER_IS(compiler) && CPP_COMPILER_VERSION_IS_BELOW(major, minor, patch))
+
+#endif // INCG_CPPLIB_COMPILER_HPP

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_LIKELY_HPP
+#define INCG_CPPLIB_LIKELY_HPP
 
 #include "BeginEndMacro.hpp"
 #include "Compiler.hpp"
@@ -18,3 +19,5 @@
 #    define CPP_LIKELY(condition) condition
 #    define CPP_UNLIKELY(condition) condition
 #endif
+
+#endif // INCG_CPPLIB_LIKELY_HPP

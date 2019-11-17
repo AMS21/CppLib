@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_AT_HPP
+#define INCG_CPPLIB_AT_HPP
 
 #include <cstddef>
 #include <initializer_list>
@@ -55,3 +56,5 @@ namespace cpp
         return *(il.begin() + index);
     }
 } // namespace cpp
+
+#endif // INCG_CPPLIB_AT_HPP

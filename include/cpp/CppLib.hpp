@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_CPPLIB_HPP
+#define INCG_CPPLIB_CPPLIB_HPP
 
 #include "Stringify.hpp"
 #include "Versioning.hpp"
@@ -22,3 +23,5 @@ namespace cpp
 
     constexpr char VersionStr[]{CPP_VERSION_STR};
 } // namespace cpp
+
+#endif // INCG_CPPLIB_CPPLIB_HPP

@@ -4,7 +4,8 @@
  *        together in order to form a single sequence of tokens at
  *        preprocessing time.
 **/
-#pragma once
+#ifndef INCG_CPPLIB_GLUE_HPP
+#define INCG_CPPLIB_GLUE_HPP
 
 /*!
  * \def CPP_DETAIL_GLUE(a, b)
@@ -21,3 +22,5 @@
  *          helloworld
 **/
 #define CPP_GLUE(a, b) CPP_DETAIL_GLUE(a, b)
+
+#endif // INCG_CPPLIB_GLUE_HPP

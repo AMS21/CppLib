@@ -3,7 +3,8 @@
  * \brief Exports a macro that simplifies the definition functions or variables
  *        with an anonymous name.
 **/
-#pragma once
+#ifndef INCG_CPPLIB_ANONYMOUSNAME_HPP
+#define INCG_CPPLIB_ANONYMOUSNAME_HPP
 
 #include "Glue.hpp" // CPP_GLUE
 
@@ -19,3 +20,5 @@
 #else // __COUNTER__
 #    define CPP_ANONYMOUS_NAME(x) CPP_GLUE(x, __LINE__)
 #endif // __COUNTER__
+
+#endif // INCG_CPPLIB_ANONYMOUSNAME_HPP

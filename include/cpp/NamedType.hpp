@@ -3,7 +3,8 @@
  * \brief Exports the strongly typed class NamedType.
  *
 **/
-#pragma once
+#ifndef INCG_CPPLIB_NAMEDTYPE_HPP
+#define INCG_CPPLIB_NAMEDTYPE_HPP
 
 // Based on the excellent work from Jonathan Boccara on his NamedType library: https://github.com/joboccara/NamedType
 
@@ -375,3 +376,5 @@ namespace std
         }
     };
 } // namespace std
+
+#endif // INCG_CPPLIB_NAMEDTYPE_HPP

@@ -35,7 +35,8 @@ For more information, please refer to <http://unlicense.org>
  * This implementation is heavily based upon Abhinav Gauniyal's excellent rang Library.
  * https://github.com/agauniyal/rang
 **/
-#pragma once
+#ifndef INCG_CPPLIB_CONSOLE_HPP
+#define INCG_CPPLIB_CONSOLE_HPP
 
 #include "OS.hpp"
 #include "StreamScopeGuard.hpp"
@@ -696,3 +697,5 @@ inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, T
 }
 
 CPP_GCC_SUPPRESS_WARNING_POP
+
+#endif // INCG_CPPLIB_CONSOLE_HPP

@@ -3,7 +3,8 @@
  * \brief Exports a macro that can be used to turn any sequence of tokens
  *        into a C-string literal at preprocessing time.
 **/
-#pragma once
+#ifndef INCG_CPPLIB_STRINGIFY_HPP
+#define INCG_CPPLIB_STRINGIFY_HPP
 
 /*!
  * \def CPP_DETAIL_STRINGIFY(tokens)
@@ -21,3 +22,5 @@
  *          "helloworld"
 **/
 #define CPP_STRINGIFY(tokens) CPP_DETAIL_STRINGIFY(tokens)
+
+#endif // INCG_CPPLIB_STRINGIFY_HPP

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_STREAMSCOPEGUARD_HPP
+#define INCG_CPPLIB_STREAMSCOPEGUARD_HPP
 
 #include <iostream>
 
@@ -32,3 +33,5 @@ namespace cpp
         const std::streamsize              mPrecision;
     };
 } // namespace cpp
+
+#endif // INCG_CPPLIB_STREAMSCOPEGUARD_HPP
