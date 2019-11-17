@@ -198,7 +198,7 @@
  *        CPP_COMPILER_CLANG, CPP_COMPILER_ICC, CPP_COMPILER_MSVC, CPP_COMPILER_GCC,
  *        CPP_COMPILER_MINGW or CPP_COMPILER_UNKNOWN
  * \warning Using CPP_COMPILER_IS_NOT with any other value than one in the format of CPP_COMPILER_X
- *          can result in unexpected behaviour!
+ *          can result in unexpected behavior!
  * \sa CPP_COMPILER_IS, CPP_COMPILER
 **/
 #define CPP_COMPILER_IS_NOT(compiler) (CPP_COMPILER != (compiler))
