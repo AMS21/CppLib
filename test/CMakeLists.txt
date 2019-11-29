@@ -10,6 +10,7 @@ file(GLOB TEST_SOURCES
 	"src/AnonymousName.test.cpp"
 	"src/Assume.test.cpp"
 	"src/At.test.cpp"
+	"src/Bit.test.cpp"
 	"src/Console.test.cpp"
 	"src/CppLib.test.cpp"
 	"src/main.cpp"

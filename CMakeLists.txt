@@ -53,6 +53,7 @@ file(GLOB LIB_HEADERS
     "include/cpp/Assume.hpp"
     "include/cpp/At.hpp"
     "include/cpp/BeginEndMacro.hpp"
+	"include/cpp/Bit.hpp"
     "include/cpp/BreakIntoDebugger.hpp"
     "include/cpp/Compiler.hpp"
     "include/cpp/Console.hpp"
