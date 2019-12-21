@@ -9,7 +9,7 @@ namespace cpp
     class StreamScopeGuard
     {
     public:
-        StreamScopeGuard(std::basic_ostream<CharT, Traits>& os)
+        explicit StreamScopeGuard(std::basic_ostream<CharT, Traits>& os)
             : mOS(os)
             , mFlags(mOS.flags())
             , mWidth(mOS.width())
