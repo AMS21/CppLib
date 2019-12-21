@@ -1,4 +1,6 @@
 #include "doctest.h"
+
+#include <climits>
 #include <cpp/Bit.hpp>
 #include <cstdint>
 
