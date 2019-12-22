@@ -188,8 +188,8 @@ script:
   # Thread Sanitizer
   ############################################################################
 
-  - export TSAN_OPTIONS=verbosity=2:force_seq_cst_atomics=1
+  #- export TSAN_OPTIONS=verbosity=2:force_seq_cst_atomics=1
   # Debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_CXX_FLAGS="${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -Wl,-pie -fPIE ${TSAN_CXX_FLAGS}" . && cmake --build . --clean-first -- -j2 && ctest -j2 --output-on-failure
+  #- cmake -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_CXX_FLAGS="${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -Wl,-pie -fPIE ${TSAN_CXX_FLAGS}" . && cmake --build . --clean-first -- -j2 && ctest -j2 --output-on-failure
   # Release
-  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -Wl,-pie -fPIE ${TSAN_CXX_FLAGS}" . && cmake --build . --clean-first -- -j2 && ctest -j2 --output-on-failure
+  #- cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${SANITIZER_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=thread -Wl,-pie -fPIE ${TSAN_CXX_FLAGS}" . && cmake --build . --clean-first -- -j2 && ctest -j2 --output-on-failure
