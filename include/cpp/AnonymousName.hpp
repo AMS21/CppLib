@@ -1,6 +1,6 @@
 /*!
  * \file AnonymousName.hpp
- * \brief Exports a macro that simplifies the definition functions or variables
+ * \brief Exports a macro that simplifies the definition of functions or variables
  *        with an anonymous name.
 **/
 #ifndef INCG_CPPLIB_ANONYMOUSNAME_HPP
