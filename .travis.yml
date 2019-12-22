@@ -11,6 +11,7 @@ addons:
     sources: &apt_sources
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-8
+      - llvm-toolchain-trusty-9
 
 jobs:
   include:
@@ -21,6 +22,24 @@ jobs:
       addons: &gcc8
         apt:
           packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386"]
+          sources: *apt_sources
+
+    # GCC 8 x86
+    - env: COMPILER=g++-8 ARCH=x86 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
+      compiler: gcc
+      os: linux
+      addons: &gcc8
+        apt:
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
+          sources: *apt_sources
+
+    # GCC 8 x64
+    - env: COMPILER=g++-8 ARCH=x64 SANITIZER_CXX_FLAGS="-fuse-ld=gold" TSAN_CXX_FLAGS="-ltsan"
+      compiler: gcc
+      os: linux
+      addons: &gcc8
+        apt:
+          packages: ["g++-8",   "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
     # GCC 9 x86
@@ -59,10 +78,58 @@ jobs:
           packages: ["clang-8", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
           sources: *apt_sources
 
+    # Clang 9.0 x86
+    - env: COMPILER=clang++-9 ARCH=x86
+      compiler: clang
+      os: linux
+      addons: &clang9
+        apt:
+          packages: ["clang-9", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
+          sources: *apt_sources
+
+    # Clang 9.0 x64
+    - env: COMPILER=clang++-9 ARCH=x64
+      compiler: clang
+      os: linux
+      addons: &clang9
+        apt:
+          packages: ["clang-9", "g++-8-multilib", "libc6-dbg", "libc6-dbg:i386", "linux-libc-dev", "linux-libc-dev:i386", "valgrind"]
+          sources: *apt_sources
+
     # Xcode 10.2 Clang x64
     - env: COMPILER=clang++ ARCH=x64
       compiler: clang
       osx_image: xcode10.2
+      os: osx
+
+    # Xcode 10.3 Clang x64
+    - env: COMPILER=clang++ ARCH=x64
+      compiler: clang
+      osx_image: xcode10.3
+      os: osx
+
+    # Xcode 11 Clang x64
+    - env: COMPILER=clang++ ARCH=x64
+      compiler: clang
+      osx_image: xcode11
+      os: osx
+
+    # Xcode 11.1 Clang x64
+    - env: COMPILER=clang++ ARCH=x64
+      compiler: clang
+      osx_image: xcode11.1
+      os: osx
+
+    # Xcode 11.2 Clang x64
+    - env: COMPILER=clang++ ARCH=x64
+      compiler: clang
+      osx_image: xcode11.2
+      os: osx
+
+    # Xcode 11.3 Clang x64
+    - env: COMPILER=clang++ ARCH=x64
+      compiler: clang
+      osx_image: xcode11.3
       os: osx
 
 install:
