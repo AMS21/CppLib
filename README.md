@@ -7,6 +7,5 @@
 
 |Branch|Travis|Appveyor|Code coverage|
 |------|------|--------|-------------|
-|master |[![Build Status](https://travis-ci.com/AMS21/CppLib.svg?branch=master)](https://travis-ci.com/AMS21/CppLib)|[![Build status](https://ci.appveyor.com/api/projects/status/9m25scrwn1xqn9er/branch/master?svg=true)](https://ci.appveyor.com/project/CppAndre/cpplib/branch/master)|
-[![codecov](https://codecov.io/gh/AMS21/CppLib/branch/master/graph/badge.svg)](https://codecov.io/gh/AMS21/CppLib)
-|develop|[![Build Status](https://travis-ci.com/AMS21/CppLib.svg?branch=develop)](https://travis-ci.com/AMS21/CppLib)|[![Build status](https://ci.appveyor.com/api/projects/status/9m25scrwn1xqn9er/branch/develop?svg=true)](https://ci.appveyor.com/project/CppAndre/cpplib/branch/develop)|[![codecov](https://codecov.io/gh/AMS21/CppLib/branch/develop/graph/badge.svg)](https://codecov.io/gh/AMS21/CppLib)
+|master|[![Build Status](https://travis-ci.com/AMS21/CppLib.svg?branch=master)](https://travis-ci.com/AMS21/CppLib)|[![Build status](https://ci.appveyor.com/api/projects/status/9m25scrwn1xqn9er/branch/master?svg=true)](https://ci.appveyor.com/project/CppAndre/cpplib/branch/master)|[![codecov](https://codecov.io/gh/AMS21/CppLib/branch/master/graph/badge.svg)](https://codecov.io/gh/AMS21/CppLib)|
+|develop|[![Build Status](https://travis-ci.com/AMS21/CppLib.svg?branch=develop)](https://travis-ci.com/AMS21/CppLib)|[![Build status](https://ci.appveyor.com/api/projects/status/9m25scrwn1xqn9er/branch/develop?svg=true)](https://ci.appveyor.com/project/CppAndre/cpplib/branch/develop)|[![codecov](https://codecov.io/gh/AMS21/CppLib/branch/develop/graph/badge.svg)](https://codecov.io/gh/AMS21/CppLib)|
