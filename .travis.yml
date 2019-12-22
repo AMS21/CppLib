@@ -12,7 +12,7 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-8
 
-matrix:
+jobs:
   include:
     # coverage
     - env: COMPILER=g++-8 CODE_COVERAGE=true
