@@ -53,7 +53,7 @@ file(GLOB LIB_HEADERS
     "include/cpp/Assume.hpp"
     "include/cpp/At.hpp"
     "include/cpp/BeginEndMacro.hpp"
-	"include/cpp/Bit.hpp"
+    "include/cpp/Bit.hpp"
     "include/cpp/BreakIntoDebugger.hpp"
     "include/cpp/Compiler.hpp"
     "include/cpp/Console.hpp"
@@ -105,6 +105,11 @@ if (CPPLIB_BUILD_EXAMPLES)
 endif(CPPLIB_BUILD_EXAMPLES)
 
 ### Documentation
+# BUILD_DOCS overrides the local target
+if (DEFINED BUILD_DOCS)
+    set(CPPLIB_BUILD_DOCS ${BUILD_DOCS})
+endif()
+
 if (CPPLIB_BUILD_DOCS)
     add_subdirectory("docs")
 endif(CPPLIB_BUILD_DOCS)
