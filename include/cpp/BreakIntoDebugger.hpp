@@ -3,7 +3,8 @@
  * \brief Cross platform macro to break into the debugger
  *
 **/
-#pragma once
+#ifndef INCG_CPPLIB_BREAKINTODEBUGGER_HPP
+#define INCG_CPPLIB_BREAKINTODEBUGGER_HPP
 
 #include "Compiler.hpp" // CPP_COMPILER_IS, CPP_COMPILER_MSVC, CPP_COMPILER_MINGW
 #include "OS.hpp"       // CPP_OS_IS, CPP_OS_MACOS, CPP_OS_LINUX
@@ -36,3 +37,5 @@ CPP_GCC_SUPPRESS_WARNING_POP
  * \note Currently only supported on MacOs, MSVC, MinGW and Linux on
  *       all other platforms/compilers it simply does nothing.
 **/
+
+#endif // INCG_CPPLIB_BREAKINTODEBUGGER_HPP

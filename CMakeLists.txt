@@ -4,10 +4,19 @@ cmake_minimum_required(VERSION 2.8.12)
 # Project
 project( "CppLib" CXX )
 
+# Check if CppLib is being used directly or via add_subdirectory, but allow overriding
+if (NOT DEFINED CPPLIB_MASTER_PROJECT)
+    if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        set(CPPLIB_MASTER_PROJECT ON)
+    else()
+        set(CPPLIB_MASTER_PROJECT OFF)
+    endif()
+endif()
+
 # Options
-option(CPPLIB_BUILD_TESTS    "Build the unit test suite" ON)
-option(CPPLIB_BUILD_DOCS     "Build the doxygen documentation" ON)
-option(CPPLIB_BUILD_EXAMPLES "Build the example applications" ON)
+option(CPPLIB_BUILD_TESTS    "Build the unit test suite"       ${CPPLIB_MASTER_PROJECT})
+option(CPPLIB_BUILD_DOCS     "Build the doxygen documentation" ${CPPLIB_MASTER_PROJECT})
+option(CPPLIB_BUILD_EXAMPLES "Build the example applications"  ${CPPLIB_MASTER_PROJECT})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -44,6 +53,7 @@ file(GLOB LIB_HEADERS
     "include/cpp/Assume.hpp"
     "include/cpp/At.hpp"
     "include/cpp/BeginEndMacro.hpp"
+	"include/cpp/Bit.hpp"
     "include/cpp/BreakIntoDebugger.hpp"
     "include/cpp/Compiler.hpp"
     "include/cpp/Console.hpp"
@@ -57,6 +67,7 @@ file(GLOB LIB_HEADERS
     "include/cpp/NonCopyable.hpp"
     "include/cpp/OS.hpp"
     "include/cpp/SourceLine.hpp"
+    "include/cpp/StreamScopeGuard.hpp"
     "include/cpp/Stringify.hpp"
     "include/cpp/Versioning.hpp"
     "include/cpp/Warning.hpp"
@@ -76,8 +87,10 @@ target_include_directories(${PROJECT_NAME} INTERFACE
     "$<INSTALL_INTERFACE:include>" # <prefix>/include
     )
 
-# Hack for IDE's like MSVC see https://stackoverflow.com/a/29214327
-add_custom_target(${PROJECT_NAME}_ide SOURCES ${LIB_HEADERS})
+if (CPPLIB_MASTER_PROJECT)
+    # Hack for IDE's like MSVC see https://stackoverflow.com/a/29214327
+    add_custom_target(${PROJECT_NAME}_ide SOURCES ${LIB_HEADERS})
+endif()
 
 ### TESTS
 if (CPPLIB_BUILD_TESTS)

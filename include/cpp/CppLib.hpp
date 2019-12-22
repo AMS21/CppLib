@@ -1,10 +1,11 @@
-#pragma once
+#ifndef INCG_CPPLIB_CPPLIB_HPP
+#define INCG_CPPLIB_CPPLIB_HPP
 
 #include "Stringify.hpp"
 #include "Versioning.hpp"
 
 #define CPP_VERSION_MAJOR 1
-#define CPP_VERSION_MINOR 1
+#define CPP_VERSION_MINOR 2
 #define CPP_VERSION_PATCH 0
 
 #define CPP_VERSION CPP_VERSION_CREATE(CPP_VERSION_MAJOR, CPP_VERSION_MINOR, CPP_VERSION_PATCH)
@@ -22,3 +23,5 @@ namespace cpp
 
     constexpr char VersionStr[]{CPP_VERSION_STR};
 } // namespace cpp
+
+#endif // INCG_CPPLIB_CPPLIB_HPP

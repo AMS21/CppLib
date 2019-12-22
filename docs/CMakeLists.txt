@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12)
 
+# Policy
+cmake_policy(SET CMP0054 NEW)
+
 project( "CppLib_documentation" CXX )
 
 find_package(Doxygen)

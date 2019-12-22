@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_NONCOPYABLE_HPP
+#define INCG_CPPLIB_NONCOPYABLE_HPP
 
 // TODO: Pre-C++11 support
 
@@ -27,3 +28,5 @@ namespace cpp
 #define CPP_NONCOPYABLE(type_identifier)                                                                               \
     type_identifier(const type_identifier&) = delete;                                                                  \
     type_identifier& operator=(const type_identifier&) = delete
+
+#endif // INCG_CPPLIB_NONCOPYABLE_HPP

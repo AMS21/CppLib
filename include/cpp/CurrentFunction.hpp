@@ -2,7 +2,8 @@
  * \file CurrentFunction.hpp
  * \brief Exports an object like macro to get the name of the current function.
 **/
-#pragma once
+#ifndef INCG_CPPLIB_CURRENT_FUNCTION_HPP
+#define INCG_CPPLIB_CURRENT_FUNCTION_HPP
 
 #include "Compiler.hpp"
 
@@ -28,3 +29,5 @@
 #else
 #    define CPP_CURRENT_FUNCTION __func__ /* use __func__ from C99 as fallback */
 #endif
+
+#endif // INCG_CPPLIB_CURRENT_FUNCTION_HPP

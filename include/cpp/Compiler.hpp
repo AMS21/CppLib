@@ -5,7 +5,8 @@
  *
  * This implementation is mostly based upon this article https://sourceforge.net/p/predef/wiki/Compilers
 **/
-#pragma once
+#ifndef INCG_CPPLIB_COMPILER_HPP
+#define INCG_CPPLIB_COMPILER_HPP
 
 #include "Versioning.hpp" // CPP_VERSION_CREATE
 
@@ -197,7 +198,7 @@
  *        CPP_COMPILER_CLANG, CPP_COMPILER_ICC, CPP_COMPILER_MSVC, CPP_COMPILER_GCC,
  *        CPP_COMPILER_MINGW or CPP_COMPILER_UNKNOWN
  * \warning Using CPP_COMPILER_IS_NOT with any other value than one in the format of CPP_COMPILER_X
- *          can result in unexpected behaviour!
+ *          can result in unexpected behavior!
  * \sa CPP_COMPILER_IS, CPP_COMPILER
 **/
 #define CPP_COMPILER_IS_NOT(compiler) (CPP_COMPILER != (compiler))
@@ -235,3 +236,5 @@
 **/
 #define CPP_COMPILER_IS_BELOW(compiler, major, minor, patch)                                                           \
     (CPP_COMPILER_IS(compiler) && CPP_COMPILER_VERSION_IS_BELOW(major, minor, patch))
+
+#endif // INCG_CPPLIB_COMPILER_HPP

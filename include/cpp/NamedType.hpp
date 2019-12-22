@@ -3,14 +3,15 @@
  * \brief Exports the strongly typed class NamedType.
  *
 **/
-#pragma once
+#ifndef INCG_CPPLIB_NAMEDTYPE_HPP
+#define INCG_CPPLIB_NAMEDTYPE_HPP
 
 // Based on the excellent work from Jonathan Boccara on his NamedType library: https://github.com/joboccara/NamedType
 
 // List of changes:
 // Constructor is noexcept if constructing T is noexcept
 // noexcept on get
-// NamedType is default constructible if T is default constructible
+// NamedType is default constructable if T is default constructable
 // Added PostIncrementable
 // Added Divisible
 // Added Modulable
@@ -375,3 +376,5 @@ namespace std
         }
     };
 } // namespace std
+
+#endif // INCG_CPPLIB_NAMEDTYPE_HPP

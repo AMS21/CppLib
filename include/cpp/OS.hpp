@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCG_CPPLIB_OS_HPP
+#define INCG_CPPLIB_OS_HPP
 
 ////////////////////////////////////////////////////////////
 /* Operating System Detection */
@@ -68,3 +69,5 @@
 #define CPP_OS_IS(os) (CPP_OS == (os))
 
 #define CPP_OS_IS_NOT(os) (CPP_OS != (os))
+
+#endif // INCG_CPPLIB_OS_HPP

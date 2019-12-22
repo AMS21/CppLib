@@ -2,7 +2,8 @@
  * \file Inline.hpp
  * \brief Exports macros to force or forbid inlining of a function.
 **/
-#pragma once
+#ifndef INCG_CPPLIB_INLINE_HPP
+#define INCG_CPPLIB_INLINE_HPP
 
 #include "Compiler.hpp"
 
@@ -36,3 +37,5 @@
 #    define CPP_ALWAYS_INLINE inline
 #    define CPP_NEVER_INLINE /* nothing */
 #endif
+
+#endif // INCG_CPPLIB_INLINE_HPP

@@ -20,6 +20,12 @@ add_library(CppLibPublicFlags INTERFACE)
 add_library(CppLib::CompileFlags ALIAS CppLibCompileFlags)
 add_library(CppLib::PublicFlags ALIAS CppLibPublicFlags)
 
+# CMake version before 3.13 do not provide 'target_link_options' <https://cmake.org/cmake/help/latest/command/target_link_options.html>
+if (CMAKE_VERSION VERSION_LESS "3.13")
+    macro(target_link_options)
+        target_link_libraries(${ARGV0} ${ARGV1} ${ARGV2})
+    endmacro(target_link_options)
+endif()
 
 # MSVC settings
 if(MSVC)
@@ -111,7 +117,6 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(CppLibCompileFlags INTERFACE "-Wshadow")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wstack-protector")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wstrict-aliasing=2")
-    target_compile_options(CppLibCompileFlags INTERFACE "-Wstrict-overflow=5")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wundef")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wunreachable-code")
     target_compile_options(CppLibCompileFlags INTERFACE "-Wunused")

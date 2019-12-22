@@ -1,4 +1,9 @@
-#pragma once
+/*!
+ * \file Assume.hpp
+ * \brief Exports a macro for compiler optimizations.
+**/
+#ifndef INCG_CPPLIB_ASSUME_HPP
+#define INCG_CPPLIB_ASSUME_HPP
 
 #include "BeginEndMacro.hpp"
 #include "Compiler.hpp"
@@ -14,3 +19,5 @@
 #else
 #    define CPP_ASSUME(condition) CPP_BEGIN_MACRO CPP_END_MACRO /* Nothing */
 #endif
+
+#endif // INCG_CPPLIB_ASSUME_HPP
